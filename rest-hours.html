@@ -48,8 +48,15 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 .wn{color:#b45309;font-weight:700}
 #logDlg{width:min(1100px,96vw)}#logDlg .wrap{max-height:55vh;margin-bottom:12px}#logDlg .controls{margin-bottom:10px;align-items:center}
 #logDlg input{width:230px;margin-top:0}#logDlg td.reason{white-space:normal;min-width:260px}#logInfo{color:var(--mut);font-size:12.5px}
+.box.side{display:grid;grid-template-columns:230px minmax(0,1fr);gap:0 18px;align-items:start}
+.box.side>h2{grid-column:1/-1}
+.box.side>.controls{flex-direction:column;flex-wrap:nowrap;margin-bottom:0;position:sticky;top:130px}
+.box.side>.controls>*{width:100%}
+.box.side>.controls button{text-align:center}
+.box.side>.wrap{grid-column:2;min-width:0}
 @media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.page{padding:14px}header{padding:14px}.controls>*{width:100%}}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.page{padding:14px}header{padding:14px}.controls>*{width:100%}
+.box.side{display:block}.box.side>.controls{position:static;flex-direction:row;flex-wrap:wrap;margin-bottom:14px}}
 </style></head><body>
 <header><nav class="tabs"><a href="index.html">ภาพรวม</a><a class="on" href="rest-hours.html">เวลาพัก พขร.</a><a href="driver-app.html">Driver App</a></nav>
 <h1>Driver Rest Hours<small>ตรวจสอบเวลาพักระหว่างงาน (ต้องพักอย่างน้อย 10 ชั่วโมง) และชั่วโมงทำงาน (ต้องไม่เกิน 14 ชั่วโมง)</small></h1>
@@ -65,7 +72,7 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <div class="k"><small>ชม.พักเฉลี่ย</small><b id="avgRest">-</b></div>
 <div class="k bad"><small>งานทำเกิน 14 ชม.</small><b id="over">0</b></div>
 </div>
-<div class="box"><h2>ชั่วโมงทำงานและเวลาพักระหว่างงาน</h2>
+<div class="box side"><h2>ชั่วโมงทำงานและเวลาพักระหว่างงาน</h2>
 <div class="controls"><input id="search" placeholder="ค้นหาชื่อ พขร.">
 <select id="branch"><option value="all">ทุกสาขา</option></select>
 <select id="workStatus"><option value="all">ชั่วโมงทำงาน: ทั้งหมด</option><option value="over">เกิน 14 ชม.</option><option value="ok">ไม่เกิน 14 ชม.</option></select>
