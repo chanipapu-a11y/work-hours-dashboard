@@ -84,8 +84,8 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <button type="button" id="viewLog" class="outline">ต้องตรวจสอบ (<span id="logCount">0</span>)</button>
 <select id="exportMonth" title="เลือกเดือนที่จะ Export"></select>
 <button type="button" id="exportXlsx" class="outline">Export Excel</button></div>
-<div class="wrap"><table><thead><tr><th>พขร.</th><th>สาขา</th><th>แหล่งเวลา</th><th>เริ่มงาน</th><th>จบงาน</th><th id="thWork" style="cursor:pointer" title="คลิกเพื่อเรียงลำดับ">ชั่วโมงทำงาน <span id="sortArrow"></span></th><th>สถานะทำงาน</th><th>พักก่อนงานถัดไป</th><th>สถานะพัก</th><th>จัดการ</th></tr></thead>
-<tbody id="workRows"><tr><td colspan="10">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
+<div class="wrap"><table><thead><tr><th>พขร.</th><th>สาขา</th><th>เริ่มงาน</th><th>จบงาน</th><th id="thWork" style="cursor:pointer" title="คลิกเพื่อเรียงลำดับ">ชั่วโมงทำงาน <span id="sortArrow"></span></th><th>สถานะทำงาน</th><th>พักก่อนงานถัดไป</th><th>สถานะพัก</th><th>จัดการ</th></tr></thead>
+<tbody id="workRows"><tr><td colspan="9">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 <dialog id="editDlg"><form id="editForm" novalidate>
 <h3 id="editTitle">แก้ไขเวลา</h3><p id="editSub"></p>
 <label>เริ่มงาน (วว/ดด/ปปปป พ.ศ. · เวลา 24 ชม.)<div class="dt"><input id="editStartDate" inputmode="numeric" placeholder="วว/ดด/ปปปป" maxlength="10" autocomplete="off"><input id="editStartTime" inputmode="numeric" placeholder="ชช:นน" maxlength="5" autocomplete="off"></div></label>
@@ -358,14 +358,14 @@ if(sortMode==="desc")works.sort((a,b)=>(b.end-b.start)-(a.end-a.start));
 else if(sortMode==="asc")works.sort((a,b)=>(a.end-a.start)-(b.end-b.start));
 document.getElementById("sortArrow").textContent=sortMode==="desc"?"▼":sortMode==="asc"?"▲":"";
 const wbody=document.getElementById("workRows");wbody.innerHTML="";
-if(!works.length)emptyRow(wbody,10);
+if(!works.length)emptyRow(wbody,9);
 works.forEach(r=>{const ms=r.end-r.start,over=ms>WORK_LIMIT_MS,tr=document.createElement("tr"),hasRest=r.restMs!==undefined;
-[r.driver,r.branch||"-",r.source,dateText(r.start),dateText(r.end),duration(ms),over?"เกิน 14 ชม.":"ปกติ",
+[r.driver,r.branch||"-",dateText(r.start),dateText(r.end),duration(ms),over?"เกิน 14 ชม.":"ปกติ",
 hasRest?duration(r.restMs):"-",hasRest?r.restStatus:"-"].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;
-if(i===5&&over)td.className="fail";
-if(i===6)td.className=over?"fail":"pass";
-if(i===7&&hasRest&&r.restStatus==="ไม่ผ่าน")td.className="fail";
-if(i===8&&hasRest)td.className=r.restStatus==="ผ่าน"?"pass":"fail";
+if(i===4&&over)td.className="fail";
+if(i===5)td.className=over?"fail":"pass";
+if(i===6&&hasRest&&r.restStatus==="ไม่ผ่าน")td.className="fail";
+if(i===7&&hasRest)td.className=r.restStatus==="ผ่าน"?"pass":"fail";
 tr.appendChild(td)});
 const act=document.createElement("td");
 const eb=document.createElement("button");eb.type="button";eb.className="mini";eb.textContent="แก้ไข";eb.addEventListener("click",()=>openEdit(r));act.appendChild(eb);
