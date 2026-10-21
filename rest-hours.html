@@ -74,7 +74,9 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <button type="button" id="viewOngoing" class="outline">งานที่ยังไม่จบ (<span id="ongoingCount">0</span>)</button>
 <button type="button" id="viewEdited" class="outline">ดูรายการที่แก้ไข (<span id="editedCount">0</span>)</button>
 <button type="button" id="viewDeleted" class="outline">ดูรายการที่ลบ (<span id="delCount">0</span>)</button>
-<button type="button" id="viewLog" class="outline">ต้องตรวจสอบ (<span id="logCount">0</span>)</button></div>
+<button type="button" id="viewLog" class="outline">ต้องตรวจสอบ (<span id="logCount">0</span>)</button>
+<select id="exportMonth" title="เลือกเดือนที่จะ Export"></select>
+<button type="button" id="exportXlsx" class="outline">Export Excel</button></div>
 <div class="wrap"><table><thead><tr><th>พขร.</th><th>สาขา</th><th>แหล่งเวลา</th><th>เริ่มงาน</th><th>จบงาน</th><th id="thWork" style="cursor:pointer" title="คลิกเพื่อเรียงลำดับ">ชั่วโมงทำงาน <span id="sortArrow"></span></th><th>สถานะทำงาน</th><th>พักก่อนงานถัดไป</th><th>สถานะพัก</th><th>จัดการ</th></tr></thead>
 <tbody id="workRows"><tr><td colspan="10">กำลังโหลดข้อมูล...</td></tr></tbody></table></div></div>
 <dialog id="editDlg"><form id="editForm" novalidate>
@@ -104,6 +106,7 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <tbody id="logRows"></tbody></table></div>
 <div class="actions"><button type="button" id="logClose">ปิด</button></div></dialog>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 "use strict";
 const CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vSWLQuTDK81qBHrVGIrbfLMQd2SbGcmeVPqgnd5RNzIKEYFYgenm6kofz8bzaLI-wmSnY6oZE8759Vy/pub?gid=82973366&single=true&output=csv";
@@ -193,7 +196,7 @@ deletedRecs=[];records=records.filter(r=>{if(overrides[DEL+r.key]){deletedRecs.p
 deletedRecs.forEach(r=>{if(r.manual){const l=logRows.find(x=>x.key===r.key);if(l){l.fixed=false;l.deleted=true}}});
 logRows.forEach(l=>{if(l.key&&overrides[DEL+l.key])l.deleted=true});
 computeRest();
-updateBranches();render();
+updateBranches();updateMonths();render();
 const latest=[...records.map(r=>r.end),...ongoingRows.map(o=>o.start)].reduce((m,d)=>(!m||d>m)?d:m,null);
 message.textContent=latest?"ข้อมูลอัปเดตถึงวันที่ "+fmtDate(latest)+" เวลา "+fmtTime(latest)+" น.":"ไม่พบข้อมูลงาน";
 if(ongoingRows.length)message.textContent+=" | ยังไม่จบงาน "+ongoingRows.length+" รายการ";
@@ -418,5 +421,34 @@ document.getElementById("logClose").addEventListener("click",()=>document.getEle
 document.getElementById("logType").addEventListener("change",renderLog);
 document.getElementById("logSearch").addEventListener("input",renderLog);
 document.getElementById("logDownload").addEventListener("click",downloadLog);
+const MONTHS_TH=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const monthKey=d=>d.getFullYear()+"-"+pad2(d.getMonth()+1);
+const monthLabel=k=>{const[y,m]=k.split("-");return MONTHS_TH[+m-1]+" "+(+y+543)};
+function updateMonths(){const sel=document.getElementById("exportMonth"),old=sel.value;
+const ks=[...new Set(records.map(r=>monthKey(r.start)))].sort().reverse();
+sel.innerHTML="";
+ks.forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=monthLabel(k);sel.appendChild(o)});
+const all=document.createElement("option");all.value="all";all.textContent="ทุกเดือน";sel.appendChild(all);
+sel.value=(old==="all"||ks.includes(old))?old:(ks[0]||"all")}
+function exportExcel(){
+if(typeof XLSX==="undefined"){alert("โหลดไลบรารี Excel ไม่สำเร็จ กรุณารีเฟรชหน้า");return}
+const mk=document.getElementById("exportMonth").value,inM=d=>mk==="all"||monthKey(d)===mk;
+const hrs=ms=>Math.round(ms/36000)/100;
+const jobs=records.filter(r=>inM(r.start)).slice().sort((a,b)=>a.driver.localeCompare(b.driver,"th")||a.start-b.start);
+if(!jobs.length){alert("ไม่มีข้อมูลในเดือนที่เลือก");return}
+const h1=["พขร.","สาขา","แหล่งเวลา","เริ่มงาน","จบงาน","ชั่วโมงทำงาน (ชม.)","สถานะทำงาน","พักก่อนงานถัดไป (ชม.)","สถานะพัก","แก้ไขแล้ว"];
+const a1=[h1].concat(jobs.map(r=>{const ms=r.end-r.start,hasRest=r.restMs!==undefined;
+return[r.driver,r.branch||"",r.source,dateText(r.start),dateText(r.end),hrs(ms),ms>WORK_LIMIT_MS?"เกิน 14 ชม.":"ปกติ",hasRest?hrs(r.restMs):"",hasRest?r.restStatus:"",r.edited?"ใช่":""]}));
+const rests=restRows.filter(r=>inM(r.nextStart));
+const h2=["พขร.","สาขา","จบงานก่อนหน้า","เริ่มงานถัดไป","เวลาพัก (ชม.)","สถานะ"];
+const a2=[h2].concat(rests.map(r=>[r.driver,r.branch||"",dateText(r.previousEnd),dateText(r.nextStart),hrs(r.ms),r.status]));
+const ws1=XLSX.utils.aoa_to_sheet(a1),ws2=XLSX.utils.aoa_to_sheet(a2);
+ws1["!cols"]=[{wch:22},{wch:12},{wch:14},{wch:18},{wch:18},{wch:16},{wch:14},{wch:20},{wch:12},{wch:10}];
+ws2["!cols"]=[{wch:22},{wch:12},{wch:18},{wch:18},{wch:14},{wch:10}];
+const wb=XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb,ws1,"งานและชั่วโมงทำงาน");
+XLSX.utils.book_append_sheet(wb,ws2,"เวลาพัก");
+XLSX.writeFile(wb,"rest-hours-"+(mk==="all"?"all":mk)+".xlsx")}
+document.getElementById("exportXlsx").addEventListener("click",exportExcel);
 loadData();
 </script></body></html>
