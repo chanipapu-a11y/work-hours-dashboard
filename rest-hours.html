@@ -82,6 +82,7 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <button type="button" id="viewEdited" class="outline">ดูรายการที่แก้ไข (<span id="editedCount">0</span>)</button>
 <button type="button" id="viewDeleted" class="outline">ดูรายการที่ลบ (<span id="delCount">0</span>)</button>
 <button type="button" id="viewLog" class="outline">ต้องตรวจสอบ (<span id="logCount">0</span>)</button>
+<button type="button" id="addRec" class="outline">+ เพิ่มเวลาเข้า-ออกงาน</button>
 <select id="exportMonth" title="เลือกเดือนที่จะ Export"></select>
 <button type="button" id="exportXlsx" class="outline">Export Excel</button></div>
 <div class="wrap"><table><thead><tr><th>พขร.</th><th>สาขา</th><th>เริ่มงาน</th><th>จบงาน</th><th id="thWork" style="cursor:pointer" title="คลิกเพื่อเรียงลำดับ">ชั่วโมงทำงาน <span id="sortArrow"></span></th><th>สถานะทำงาน</th><th>พักก่อนงานถัดไป</th><th>สถานะพัก</th><th>จัดการ</th></tr></thead>
@@ -92,6 +93,16 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <label>จบงาน (วว/ดด/ปปปป พ.ศ. · เวลา 24 ชม.)<div class="dt"><input id="editEndDate" inputmode="numeric" placeholder="วว/ดด/ปปปป" maxlength="10" autocomplete="off"><input id="editEndTime" inputmode="numeric" placeholder="ชช:นน" maxlength="5" autocomplete="off"></div></label>
 <div id="editErr" class="fail" role="alert"></div>
 <div class="actions"><button type="button" id="editCancel">ยกเลิก</button><button type="submit" class="primary">บันทึก</button></div>
+</form></dialog>
+<dialog id="addDlg"><form id="addForm" novalidate>
+<h3>เพิ่มเวลาเข้า-ออกงาน</h3><p>เพิ่มรายการงานเอง รายการนี้จะถูกนำไปคำนวณชั่วโมงทำงานและเวลาพักรวมกับข้อมูลจากชีต</p>
+<label>ชื่อ พขร.<input id="addDriver" list="dlDrivers" placeholder="พิมพ์หรือเลือกชื่อ" autocomplete="off"></label>
+<label>สาขา<input id="addBranch" list="dlBranches" placeholder="พิมพ์หรือเลือกสาขา" autocomplete="off"></label>
+<label>เริ่มงาน (วว/ดด/ปปปป พ.ศ. · เวลา 24 ชม.)<div class="dt"><input id="addStartDate" inputmode="numeric" placeholder="วว/ดด/ปปปป" maxlength="10" autocomplete="off"><input id="addStartTime" inputmode="numeric" placeholder="ชช:นน" maxlength="5" autocomplete="off"></div></label>
+<label>จบงาน (วว/ดด/ปปปป พ.ศ. · เวลา 24 ชม.)<div class="dt"><input id="addEndDate" inputmode="numeric" placeholder="วว/ดด/ปปปป" maxlength="10" autocomplete="off"><input id="addEndTime" inputmode="numeric" placeholder="ชช:นน" maxlength="5" autocomplete="off"></div></label>
+<datalist id="dlDrivers"></datalist><datalist id="dlBranches"></datalist>
+<div id="addErr" class="fail" role="alert" style="min-height:18px;font-size:12.5px;margin-bottom:6px"></div>
+<div class="actions"><button type="button" id="addCancel">ยกเลิก</button><button type="submit" class="primary">บันทึก</button></div>
 </form></dialog>
 <dialog id="listDlg"><h3>รายการที่แก้ไขเวลา</h3><p>เปรียบเทียบเวลาเดิมจากชีตกับเวลาที่แก้ไข กด "คืนค่า" เพื่อกลับไปใช้เวลาเดิม</p>
 <div class="wrap"><table><thead><tr><th>พขร.</th><th>สาขา</th><th>แหล่งเวลา</th><th>เวลาเดิม</th><th>เวลาที่แก้ไข</th><th>ชั่วโมงทำงานใหม่</th><th>จัดการ</th></tr></thead>
@@ -198,7 +209,7 @@ records=nr;
 records.forEach(r=>{r.origStart=r.start;r.origEnd=r.end;r.key=[r.driver,r.source,r.origStart.getTime(),r.origEnd.getTime()].join("|")});
 let ovrNote="";
 try{await refreshOverrides()}catch(e){overrides=loadLocal();ovrNote=" | โหลดค่าที่แก้ไขจากชีตไม่สำเร็จ ("+e.message+") ใช้ค่าในเบราว์เซอร์แทน"}
-applyManual();applyOverrides();
+applyManual();applyAdded();applyOverrides();
 deletedRecs=[];records=records.filter(r=>{if(overrides[DEL+r.key]){deletedRecs.push(r);return false}return true});
 deletedRecs.forEach(r=>{if(r.manual){const l=logRows.find(x=>x.key===r.key);if(l){l.fixed=false;l.deleted=true}}});
 logRows.forEach(l=>{if(l.key&&overrides[DEL+l.key])l.deleted=true});
@@ -245,7 +256,7 @@ if(v&&v.start&&v.end&&v.end>v.start){l.fixed=true;
 records.push({driver:l.driver,branch:l.branch,start:new Date(v.start),end:new Date(v.end),source:l.source||"แก้ไขเอง",rowNumber:l.row,
 manual:true,key:l.key,origStart:new Date(v.start),origEnd:new Date(v.end),manualOrig:(l.startRaw||"-")+" – "+(l.endRaw||"-")})}})}
 function applyOverrides(){const o=overrides;
-records.forEach(r=>{const v=o[r.key];
+records.forEach(r=>{if(r.added){r.edited=false;return}const v=o[r.key];
 if(v&&v.start&&v.end&&v.end>v.start){r.start=new Date(v.start);r.end=new Date(v.end);r.edited=true}else r.edited=false})}
 const pad2=n=>String(n).padStart(2,"0");
 const fmtDate=d=>pad2(d.getDate())+"/"+pad2(d.getMonth()+1)+"/"+(d.getFullYear()+543);
@@ -324,7 +335,7 @@ const btn=e.submitter;if(btn)btn.disabled=true;err.textContent="กำลัง�
 try{await persistOverride(editing,{start:s.getTime(),end:en.getTime()})}
 catch(ex){err.textContent="บันทึกไม่สำเร็จ: "+ex.message;if(btn)btn.disabled=false;return}
 if(btn)btn.disabled=false;
-editing.start=s;editing.end=en;editing.edited=true;
+editing.start=s;editing.end=en;if(editing.added){editing.origStart=s;editing.origEnd=en}else editing.edited=true;
 if(editing.manual&&!records.includes(editing)){editing.origStart=s;editing.origEnd=en;records.push(editing);const l=logRows.find(x=>x.key===editing.key);if(l)l.fixed=true}
 computeRest();render();if(document.getElementById("logDlg").open)renderLog();document.getElementById("editDlg").close()});
 function duration(ms){const mins=Math.floor(ms/60000);return Math.floor(mins/60)+" ชม. "+(mins%60)+" นาที"}
@@ -370,6 +381,7 @@ tr.appendChild(td)});
 const act=document.createElement("td");
 const eb=document.createElement("button");eb.type="button";eb.className="mini";eb.textContent="แก้ไข";eb.addEventListener("click",()=>openEdit(r));act.appendChild(eb);
 const db=document.createElement("button");db.type="button";db.className="mini del";db.textContent="ลบ";db.addEventListener("click",()=>deleteRec(r));act.appendChild(db);
+if(r.added){const tg=document.createElement("span");tg.className="tag";tg.textContent="เพิ่มเอง";act.appendChild(tg)}
 if(r.edited){const tag=document.createElement("span");tag.className="tag";tag.textContent="แก้ไขแล้ว";act.appendChild(tag);
 const rb=document.createElement("button");rb.type="button";rb.className="mini";rb.textContent="คืนค่า";rb.addEventListener("click",()=>resetEdit(r));act.appendChild(rb)}
 tr.appendChild(act);
@@ -457,5 +469,35 @@ XLSX.utils.book_append_sheet(wb,ws1,"งานและชั่วโมงท�
 XLSX.utils.book_append_sheet(wb,ws2,"เวลาพัก");
 XLSX.writeFile(wb,"rest-hours-"+(mk==="all"?"all":mk)+".xlsx")}
 document.getElementById("exportXlsx").addEventListener("click",exportExcel);
+function applyAdded(){Object.keys(overrides).forEach(k=>{if(k.indexOf("add|")!==0)return;const v=overrides[k];
+if(!(v&&v.start&&v.end&&v.end>v.start))return;const p=k.split("|");
+records.push({driver:p[1]||"",branch:p[2]||"",start:new Date(v.start),end:new Date(v.end),source:"เพิ่มเอง",rowNumber:0,added:true,key:k,origStart:new Date(v.start),origEnd:new Date(v.end)})})}
+["addStartDate","addEndDate"].forEach(id=>document.getElementById(id).addEventListener("input",e=>maskDate(e.target)));
+["addStartTime","addEndTime"].forEach(id=>document.getElementById(id).addEventListener("input",e=>maskTime(e.target)));
+function fillList(id,vals){const dl=document.getElementById(id);dl.innerHTML="";vals.forEach(v=>{const o=document.createElement("option");o.value=v;dl.appendChild(o)})}
+document.getElementById("addRec").addEventListener("click",()=>{
+fillList("dlDrivers",[...new Set(records.map(r=>r.driver).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th")));
+fillList("dlBranches",[...new Set(records.map(r=>r.branch).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th")));
+const today=fmtDate(new Date());
+document.getElementById("addDriver").value="";document.getElementById("addBranch").value="";
+document.getElementById("addStartDate").value=today;document.getElementById("addEndDate").value=today;
+document.getElementById("addStartTime").value="";document.getElementById("addEndTime").value="";
+document.getElementById("addErr").textContent="";
+document.getElementById("addDlg").showModal()});
+document.getElementById("addCancel").addEventListener("click",()=>document.getElementById("addDlg").close());
+document.getElementById("addForm").addEventListener("submit",async e=>{e.preventDefault();
+const err=document.getElementById("addErr"),clean=v=>v.trim().replace(/\|/g," "),
+driver=clean(document.getElementById("addDriver").value),branch=clean(document.getElementById("addBranch").value),
+s=readDT("addStart"),en=readDT("addEnd");
+if(!driver){err.textContent="กรุณากรอกชื่อ พขร.";return}
+if(!s||!en){err.textContent="รูปแบบไม่ถูกต้อง กรุณากรอกวันที่ วว/ดด/ปปปป และเวลา ชช:นน (24 ชั่วโมง)";return}
+if(en<=s){err.textContent="เวลาจบต้องหลังเวลาเริ่ม";return}
+const key="add|"+driver+"|"+branch+"|"+Date.now(),btn=e.submitter;
+if(btn)btn.disabled=true;err.textContent="กำลังบันทึก...";
+try{await persistOverride({key,driver,source:"เพิ่มเอง"},{start:s.getTime(),end:en.getTime()})}
+catch(ex){err.textContent="บันทึกไม่สำเร็จ: "+ex.message;if(btn)btn.disabled=false;return}
+if(btn)btn.disabled=false;
+records.push({driver,branch,start:s,end:en,source:"เพิ่มเอง",rowNumber:0,added:true,key,origStart:s,origEnd:en});
+computeRest();updateBranches();updateMonths();render();document.getElementById("addDlg").close()});
 loadData();
 </script></body></html>
