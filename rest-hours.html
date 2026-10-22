@@ -14,7 +14,7 @@ header h1 small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-
 input,select,button{font:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
 button{background:#fff;color:var(--g8);border:0;font-weight:700;cursor:pointer}button:hover{background:var(--g1)}button:disabled{opacity:.5;cursor:wait}
 .page{max-width:1440px;margin:auto;padding:22px 24px}
-.cards{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
 .k{background:#fff;border:1px solid var(--line);border-left:4px solid var(--g7);border-radius:10px;padding:14px 16px;box-shadow:0 1px 2px rgba(15,61,36,.06)}
 .k.bad{border-left-color:var(--red)}.k.bad b{color:var(--red)}
 .k small{display:block;font-size:11.5px;color:var(--mut);font-weight:600}
@@ -68,6 +68,7 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <div class="k"><small>รอบพักไม่ผ่าน (&lt;10 ชม.)</small><b id="failed">0</b></div>
 <div class="k"><small>อัตราผ่าน</small><b id="rate">0%</b></div>
 <div class="k"><small>งานทั้งหมด</small><b id="jobs">0</b></div>
+<div class="k"><small>ชม.ทำงานทั้งหมด</small><b id="totalWork">-</b></div>
 <div class="k"><small>ชม.ทำงานเฉลี่ย</small><b id="avgWork">-</b></div>
 <div class="k"><small>ชม.พักเฉลี่ย</small><b id="avgRest">-</b></div>
 <div class="k bad"><small>งานทำเกิน 14 ชม.</small><b id="over">0</b></div>
@@ -355,7 +356,8 @@ const drivers=new Set(scoped.map(r=>r.driver)),passed=scopedRest.filter(r=>r.res
 const overCount=scoped.filter(r=>r.end-r.start>WORK_LIMIT_MS).length;
 document.getElementById("drivers").textContent=drivers.size;document.getElementById("failed").textContent=failed;
 document.getElementById("rate").textContent=(scopedRest.length?Math.round(passed/scopedRest.length*100):0)+"%";
-document.getElementById("jobs").textContent=scoped.length;document.getElementById("over").textContent=overCount;
+document.getElementById("jobs").textContent=scoped.length;
+document.getElementById("totalWork").textContent=scoped.length?(scoped.reduce((s,r)=>s+(r.end-r.start),0)/3600000).toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1})+" ชม.":"-";document.getElementById("over").textContent=overCount;
 const avgW=scoped.length?scoped.reduce((s,r)=>s+(r.end-r.start),0)/scoped.length:0,avgR=scopedRest.length?scopedRest.reduce((s,r)=>s+r.restMs,0)/scopedRest.length:0;
 document.getElementById("avgWork").textContent=scoped.length?(avgW/3600000).toFixed(1)+" ชม.":"-";
 document.getElementById("avgRest").textContent=scopedRest.length?(avgR/3600000).toFixed(1)+" ชม.":"-";
