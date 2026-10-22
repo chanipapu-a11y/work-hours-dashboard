@@ -73,7 +73,7 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <div class="k bad"><small>งานทำเกิน 14 ชม.</small><b id="over">0</b></div>
 </div>
 <div class="box side"><h2>ชั่วโมงทำงานและเวลาพักระหว่างงาน</h2>
-<div class="controls"><input id="search" placeholder="ค้นหาชื่อ พขร.">
+<div class="controls"><input id="search" list="dlSearch" placeholder="ค้นหาหรือเลือกชื่อ พขร." autocomplete="off"><datalist id="dlSearch"></datalist>
 <select id="branch"><option value="all">ทุกสาขา</option></select>
 <select id="workStatus"><option value="all">ชั่วโมงทำงาน: ทั้งหมด</option><option value="over">เกิน 14 ชม.</option><option value="ok">ไม่เกิน 14 ชม.</option></select>
 <select id="status"><option value="all">เวลาพัก: ทั้งหมด</option><option value="ผ่าน">พักผ่าน</option><option value="ไม่ผ่าน">พักไม่ผ่าน</option></select>
@@ -344,7 +344,8 @@ function updateBranches(){const sel=document.getElementById("branch"),old=sel.va
 const bs=[...new Set(records.map(r=>r.branch).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th"));
 sel.innerHTML="";const all=document.createElement("option");all.value="all";all.textContent="ทุกสาขา";sel.appendChild(all);
 bs.forEach(b=>{const o=document.createElement("option");o.value=b;o.textContent=b;sel.appendChild(o)});
-sel.value=bs.includes(old)?old:"all"}
+sel.value=bs.includes(old)?old:"all";
+fillList("dlSearch",[...new Set(records.map(r=>r.driver).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th")))}
 function emptyRow(tbody,cols){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=cols;td.textContent="ไม่พบข้อมูลที่ตรงกับเงื่อนไข";tr.appendChild(td);tbody.appendChild(tr)}
 function render(){const search=document.getElementById("search").value.trim().toLowerCase(),
 status=document.getElementById("status").value,branch=document.getElementById("branch").value,
