@@ -346,7 +346,9 @@ const bs=[...new Set(records.map(r=>r.branch).filter(Boolean))].sort((a,b)=>a.lo
 sel.innerHTML="";const all=document.createElement("option");all.value="all";all.textContent="ทุกสาขา";sel.appendChild(all);
 bs.forEach(b=>{const o=document.createElement("option");o.value=b;o.textContent=b;sel.appendChild(o)});
 sel.value=bs.includes(old)?old:"all";
-fillList("dlSearch",[...new Set(records.map(r=>r.driver).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th")))}
+updateDriverList()}
+function updateDriverList(){const b=document.getElementById("branch").value;
+fillList("dlSearch",[...new Set(records.filter(r=>b==="all"||r.branch===b).map(r=>r.driver).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"th")))}
 function emptyRow(tbody,cols){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=cols;td.textContent="ไม่พบข้อมูลที่ตรงกับเงื่อนไข";tr.appendChild(td);tbody.appendChild(tr)}
 function render(){const search=document.getElementById("search").value.trim().toLowerCase(),
 status=document.getElementById("status").value,branch=document.getElementById("branch").value,
@@ -406,7 +408,7 @@ document.getElementById("viewEdited").addEventListener("click",()=>{renderEdited
 document.getElementById("listClose").addEventListener("click",()=>document.getElementById("listDlg").close());
 document.getElementById("thWork").addEventListener("click",()=>{const s=document.getElementById("sortWork");
 s.value=s.value==="default"?"desc":s.value==="desc"?"asc":"default";render()});
-document.getElementById("branch").addEventListener("change",render);
+document.getElementById("branch").addEventListener("change",()=>{updateDriverList();render()});
 const LOG_TYPES={invalid:"วันที่/เวลาไม่ถูกต้อง",missing:"ไม่มีคู่เวลาเริ่ม/จบ",incomplete:"คู่เวลาไม่ครบ",nodriver:"ไม่มีชื่อ พขร."};
 function filteredLog(){const t=document.getElementById("logType").value,q=document.getElementById("logSearch").value.trim().toLowerCase();
 const fixedRows=new Set(logRows.filter(l=>l.fixed).map(l=>l.row));
