@@ -350,14 +350,15 @@ function emptyRow(tbody,cols){const tr=document.createElement("tr"),td=document.
 function render(){const search=document.getElementById("search").value.trim().toLowerCase(),
 status=document.getElementById("status").value,branch=document.getElementById("branch").value,
 workStatus=document.getElementById("workStatus").value;
-const drivers=new Set(records.map(r=>r.driver)),passed=restRows.filter(r=>r.status==="ผ่าน").length,failed=restRows.filter(r=>r.status==="ไม่ผ่าน").length;
-const overCount=records.filter(r=>r.end-r.start>WORK_LIMIT_MS).length;
+const scoped=records.filter(r=>r.driver.toLowerCase().includes(search)&&(branch==="all"||r.branch===branch)),scopedRest=scoped.filter(r=>r.restMs!==undefined);
+const drivers=new Set(scoped.map(r=>r.driver)),passed=scopedRest.filter(r=>r.restStatus==="ผ่าน").length,failed=scopedRest.filter(r=>r.restStatus==="ไม่ผ่าน").length;
+const overCount=scoped.filter(r=>r.end-r.start>WORK_LIMIT_MS).length;
 document.getElementById("drivers").textContent=drivers.size;document.getElementById("failed").textContent=failed;
-document.getElementById("rate").textContent=(restRows.length?Math.round(passed/restRows.length*100):0)+"%";
-document.getElementById("jobs").textContent=records.length;document.getElementById("over").textContent=overCount;
-const avgW=records.length?records.reduce((s,r)=>s+(r.end-r.start),0)/records.length:0,avgR=restRows.length?restRows.reduce((s,r)=>s+r.ms,0)/restRows.length:0;
-document.getElementById("avgWork").textContent=records.length?(avgW/3600000).toFixed(1)+" ชม.":"-";
-document.getElementById("avgRest").textContent=restRows.length?(avgR/3600000).toFixed(1)+" ชม.":"-";
+document.getElementById("rate").textContent=(scopedRest.length?Math.round(passed/scopedRest.length*100):0)+"%";
+document.getElementById("jobs").textContent=scoped.length;document.getElementById("over").textContent=overCount;
+const avgW=scoped.length?scoped.reduce((s,r)=>s+(r.end-r.start),0)/scoped.length:0,avgR=scopedRest.length?scopedRest.reduce((s,r)=>s+r.restMs,0)/scopedRest.length:0;
+document.getElementById("avgWork").textContent=scoped.length?(avgW/3600000).toFixed(1)+" ชม.":"-";
+document.getElementById("avgRest").textContent=scopedRest.length?(avgR/3600000).toFixed(1)+" ชม.":"-";
 document.getElementById("editedCount").textContent=records.filter(r=>r.edited).length;
 document.getElementById("delCount").textContent=deletedRecs.length;
 document.getElementById("ongoingCount").textContent=ongoingRows.length;
