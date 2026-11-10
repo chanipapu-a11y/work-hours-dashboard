@@ -1,43 +1,69 @@
 <!DOCTYPE html>
-<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=1600">
 <title>Driver App</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--g9:#0f3d24;--g8:#14532d;--g7:#166534;--g1:#e8f0eb;--bg:#f4f6f5;--ink:#14231a;--mut:#5f6f66;--line:#dfe6e2;--red:#b91c1c;--ok:#15803d;--amb:#b45309}
+:root{--g9:#0f3d24;--g8:#14532d;--g7:#166534;--g6:#1f8a4c;--g5:#34b36b;--g2:#cfe6d8;--g1:#e8f0eb;--g0:#f3f8f5;--bg:#e3e9e5;--surface:#f6f8f7;--ink:#14231a;--mut:#64746b;--line:#e2e9e5;--red:#b91c1c;--ok:#15803d;--amb:#ea580c;--sh:0 1px 2px rgba(15,61,36,.05),0 12px 28px -18px rgba(15,61,36,.28)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Sarabun,"Noto Sans Thai",Tahoma,Arial,sans-serif;color:var(--ink);font-size:14px}
-header{background:linear-gradient(135deg,var(--g9),var(--g7));color:#fff;padding:16px 28px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(15,61,36,.25)}
-header h1{margin:0;font-size:21px;font-weight:700;flex:1}
-header h1 small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-top:2px}
-.tabs{flex-basis:100%;display:flex;gap:6px;margin:-4px 0 2px}
-.tabs a{color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.12)}
-.tabs a.on{background:#fff;color:var(--g8)}.tabs a:hover:not(.on){background:rgba(255,255,255,.25)}
-input,select,button{font:inherit;font-size:13px;padding:8px 11px;border-radius:8px;border:1px solid var(--line)}
-header select{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);color-scheme:dark}
-header option{color:#14231a;background:#fff}
-button{background:#fff;color:var(--g8);border:0;font-weight:700;cursor:pointer}button:hover{background:var(--g1)}button:disabled{opacity:.5}
-.page{max-width:1600px;margin:auto;padding:22px 24px}
-.warn{background:#fff;color:var(--mut);border:1px solid var(--line);border-left:4px solid var(--g7);padding:9px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px;overflow-wrap:anywhere}
-.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:18px;box-shadow:0 1px 2px rgba(15,61,36,.06)}
-.box h2{margin:0 0 14px;font-size:16px;font-weight:700;color:var(--g8);padding-bottom:10px;border-bottom:2px solid var(--g1)}
-.wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;font-size:12.5px;white-space:nowrap;font-variant-numeric:tabular-nums;width:100%}
-th,td{padding:6px 9px;border-bottom:1px solid #edf1ef;text-align:center;min-width:38px}
-th{background:var(--g1);color:var(--g8);font-weight:700;font-size:12px}
-th:first-child,td:first-child{text-align:left;position:sticky;left:0;min-width:170px;background:#fff;z-index:1;border-right:1px solid var(--line)}
-th:first-child{background:var(--g1)}
-tbody tr:nth-child(even) td{background:#fafcfb}tbody tr:nth-child(even) td:first-child{background:#fafcfb}
-tr:hover td{background:#f0f6f2!important}
-td.z{color:#aab5ae}td.r{color:var(--red);font-weight:700}
-td.pg{color:var(--ok);font-weight:700}td.pa{color:var(--amb);font-weight:700}
-tr.pc td:first-child{color:#1d4ed8;font-weight:700}
-th.sun{background:#dc2626;color:#fff}
-td.avg,th.avg{background:var(--g1)!important;font-weight:700}
-@media(max-width:900px){.page{padding:14px}header{padding:14px}}
+body{margin:0;overflow-x:hidden;background:var(--surface);font-family:Sarabun,"Noto Sans Thai",Tahoma,Arial,sans-serif;color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+.shell{width:1600px;background:var(--surface);min-height:100vh}
+.top{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px 16px;padding:22px 32px 20px;background:rgba(246,248,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-radius:0}
+.tabs{display:flex;gap:4px;padding:5px;background:var(--g9);border-radius:999px;box-shadow:0 12px 24px -14px rgba(15,61,36,.8);overflow-x:auto;scrollbar-width:none;max-width:100%}
+.tabs::-webkit-scrollbar{display:none}
+.bar{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;min-width:0}
+.bar .filters{margin:0;gap:12px}
+.bar .filters select,.bar .filters input{min-height:44px}
+.tabs a{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);text-decoration:none;font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+.tabs a:hover:not(.on){color:#fff;background:rgba(255,255,255,.09)}
+.tabs a.on{background:var(--g6);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 6px 14px -6px rgba(52,179,107,.8)}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.page{padding:24px 32px 32px}
+.head{display:flex;align-items:center;gap:16px;min-width:0}.act{justify-self:end;display:flex;gap:10px}
+.head .badge{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--g7);box-shadow:var(--sh);flex:none}
+.head .badge .ico{width:20px;height:20px}
+.head .txt{flex:1;min-width:0}
+.head h1{margin:0;font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.4px}
+.head p{margin:5px 0 0;color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act .primary-btn{min-height:44px;padding:0 22px}
+input,select,button{font:inherit;font-size:13px;color:var(--ink)}
+input,select{min-height:42px;padding:9px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+select{-webkit-appearance:none;appearance:none;padding-right:40px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364746b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;cursor:pointer}
+input:focus,select:focus{border-color:var(--g6);box-shadow:0 0 0 3px rgba(31,138,76,.15)}
+button{cursor:pointer;border:0;border-radius:999px;font-weight:700;padding:9px 16px;background:#fff;color:var(--g8);transition:background .15s,box-shadow .15s}
+button:hover{background:var(--g1)}button:disabled{opacity:.55;cursor:wait}
+.primary-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;background:var(--g6);color:#fff;box-shadow:0 14px 24px -14px rgba(31,138,76,.95)}
+.primary-btn:hover{background:var(--g7)}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+.filters .lbl{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;margin-right:6px}
+.filters .lbl .ico{color:var(--g7)}
+.warn{display:flex;align-items:center;gap:12px;background:#fff;color:var(--mut);border-radius:14px;padding:10px 16px;font-size:12.5px;line-height:1.7;margin-bottom:18px;box-shadow:var(--sh);overflow-wrap:anywhere}
+.warn::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--g5);flex:none;box-shadow:0 0 0 4px rgba(52,179,107,.16)}
+.box{background:#fff;border-radius:22px;padding:20px 22px;margin-bottom:18px;min-width:0;box-shadow:var(--sh)}
+.box h2{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:15px;font-weight:700;color:var(--ink)}
+.box h2::before{content:"";width:6px;height:18px;border-radius:3px;background:var(--g6);flex:none}
+.wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+.wrap::-webkit-scrollbar{width:8px;height:8px}.wrap::-webkit-scrollbar-thumb{background:#cfdbd4;border-radius:8px}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{background:var(--g0);color:var(--mut);font-weight:700;font-size:12px}
+td{border-bottom:1px solid #eef2ef}
+tr:hover td{background:#f1f8f4!important}
+@media(max-width:0px){.shell{margin:0;border-radius:0;min-height:100vh}.top{grid-template-columns:minmax(0,1fr) auto;gap:12px 10px;padding:12px 14px;border-radius:0}.bar .filters{padding-left:0;border-left:0;width:100%}.top .head .badge{display:none}.top>span{display:none}.page{padding:16px 14px 20px}.head h1{font-size:20px}.head p{white-space:normal}.act .primary-btn{min-height:40px;padding:0 14px}.k{min-height:104px}.filters>select,.filters>input{flex:1 1 140px}}
+table{font-size:12.5px}
+th,td{padding:8px 9px;text-align:center;min-width:38px}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;min-width:180px;background:#fff;z-index:1;border-right:1px solid var(--line)}
+th:first-child{background:var(--g0)}
+tbody tr:nth-child(even) td{background:#fbfdfc}
+td.z{color:#b3beb7}td.r{color:var(--red);font-weight:700}
+td.pg{color:var(--ok);font-weight:700}td.pa{color:#b45309;font-weight:700}
+tr.pc td:first-child{color:var(--g6);font-weight:700}
+th.sun{background:#fde8e8;color:var(--red)}
+td.avg,th.avg{background:var(--g1)!important;color:var(--g8);font-weight:700}
 </style></head><body>
-<header><nav class="tabs"><a href="index.html">ภาพรวม</a><a href="rest-hours.html">เวลาพัก พขร.</a><a class="on" href="driver-app.html">Driver App</a></nav>
-<h1>Driver App<small>สรุปจำนวนงานและทริปรายวัน แยกตามสาขา</small></h1>
-<select id="month" title="เลือกเดือน"></select><button id="reload" type="button">รีเฟรช</button></header>
-<div class="page"><div id="msg" class="warn">กำลังโหลดข้อมูล...</div><div id="out"></div></div>
+<div class="shell">
+<header class="top"><div class="head"><span class="badge"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><div class="txt"><h1>Driver App</h1><p>สรุปจำนวนงานและทริปรายวัน แยกตามสาขา</p></div></div>
+<div class="bar"><nav class="tabs"><a href="index.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>ภาพรวม</a><a href="rest-hours.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>เวลาพัก พขร.</a><a class="on" aria-current="page" href="driver-app.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>Driver App</a></nav><div class="filters"><span class="lbl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M7 12h10M10 18h4"/></svg>ตัวกรอง</span><select id="month" title="เลือกเดือน"></select></div></div><div class="act"><button id="reload" type="button" class="primary-btn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>รีเฟรช</button></div></header>
+<div class="page">
+<div id="msg" class="warn">กำลังโหลดข้อมูล...</div><div id="out"></div></div>
+</div>
 <script>
 "use strict";
 const URL_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vSWLQuTDK81qBHrVGIrbfLMQd2SbGcmeVPqgnd5RNzIKEYFYgenm6kofz8bzaLI-wmSnY6oZE8759Vy/pub?gid=686076852&single=true&output=csv";
@@ -88,4 +114,5 @@ $("msg").textContent=`โหลดสำเร็จ · ${blocks.length} เด�
 catch(e){$("msg").textContent="โหลดข้อมูลไม่สำเร็จ: "+e.message}finally{btn.disabled=false}}
 $("month").addEventListener("change",()=>{render();$("msg").textContent=`แสดง ${blocks[+$("month").value].label} · ${blocks[+$("month").value].secs.length} สาขา`});
 $("reload").addEventListener("click",load);load();
-</script></body></html>
+</script><script>/* ล็อกความกว้างหน้าไว้ที่ 1600px แล้วย่อ/ขยายให้พอดีจอ: ทุกจอเห็นการจัดวางเหมือนกัน เลื่อนได้เฉพาะแนวตั้ง */(function(){var W=1600;function fit(){document.body.style.zoom=document.documentElement.clientWidth/W}addEventListener("resize",fit);fit()})();</script>
+</body></html>

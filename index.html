@@ -1,66 +1,204 @@
 <!DOCTYPE html>
-<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=1600">
 <title>Linde Dashboard</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--g9:#0f3d24;--g8:#14532d;--g7:#166534;--g1:#e8f0eb;--bg:#f4f6f5;--ink:#14231a;--mut:#5f6f66;--line:#dfe6e2;--red:#b91c1c;--ok:#15803d;--amb:#ea580c}
+:root{--g9:#0f3d24;--g8:#14532d;--g7:#166534;--g6:#1f8a4c;--g5:#34b36b;--g2:#cfe6d8;--g1:#e8f0eb;--g0:#f3f8f5;--bg:#e3e9e5;--surface:#f6f8f7;--ink:#14231a;--mut:#64746b;--line:#e2e9e5;--red:#b91c1c;--ok:#15803d;--amb:#ea580c;--sh:0 1px 2px rgba(15,61,36,.05),0 12px 28px -18px rgba(15,61,36,.28)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Sarabun,"Noto Sans Thai",Tahoma,Arial,sans-serif;color:var(--ink);font-size:14px}
-header{background:linear-gradient(135deg,var(--g9),var(--g7));color:#fff;padding:16px 28px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(15,61,36,.25)}
-header h1{margin:0;font-size:21px;font-weight:700;flex:1;letter-spacing:.2px}
-header h1 small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-top:2px}
-header input,header select{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);color-scheme:dark}
-header option{color:#14231a;background:#fff}
-input,select,button{font:inherit;font-size:13px;padding:8px 11px;border-radius:8px}
-button{background:#fff;color:var(--g8);border:0;font-weight:700;cursor:pointer}
-button:hover{background:var(--g1)}
-.page{max-width:1440px;margin:auto;padding:22px 24px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
-.k{background:#fff;border:1px solid var(--line);border-left:4px solid #cbd5d0;border-radius:10px;padding:14px 16px;box-shadow:0 1px 2px rgba(15,61,36,.06)}
-.k.tg{border-left-color:var(--ok);background:#f3faf5}
-.k.es{border-left-color:var(--amb);background:#fff8f1}
-.k small{display:block;font-size:11.5px;color:var(--mut);font-weight:600;letter-spacing:.2px}
-.k b{display:block;font-size:26px;margin-top:8px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
-.k.tg b{color:var(--ok)}
-.k.es b{color:var(--amb)}
-.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:18px;min-width:0;box-shadow:0 1px 2px rgba(15,61,36,.06)}
-.box h2{margin:0 0 14px;font-size:15px;font-weight:700;color:var(--g8);padding-bottom:10px;border-bottom:2px solid var(--g1)}
-.grid{display:grid;grid-template-columns:1fr 1.6fr;gap:18px}
-.wrap{overflow:auto;max-height:440px;border:1px solid var(--line);border-radius:8px}
-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
-th,td{padding:9px 12px;border-bottom:1px solid #edf1ef;text-align:right}
-th{background:var(--g1);color:var(--g8);font-weight:700;font-size:12px;position:sticky;top:0;z-index:1}
-tr:last-child th{position:static;border-top:2px solid var(--g7);border-bottom:0}
-tbody tr:nth-child(even) td,table tr:nth-child(even) td{background:#fafcfb}
-tr:hover td{background:#f0f6f2!important}
+body{margin:0;overflow-x:hidden;background:var(--surface);font-family:Sarabun,"Noto Sans Thai",Tahoma,Arial,sans-serif;color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+.shell{width:1600px;background:var(--surface);min-height:100vh}
+.top{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px 16px;padding:22px 32px 20px;background:rgba(246,248,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-radius:0}
+.tabs{display:flex;gap:4px;padding:5px;background:var(--g9);border-radius:999px;box-shadow:0 12px 24px -14px rgba(15,61,36,.8);overflow-x:auto;scrollbar-width:none;max-width:100%}
+.tabs::-webkit-scrollbar{display:none}
+.bar{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;min-width:0}
+.bar .filters{margin:0;gap:12px}
+.bar .filters select,.bar .filters input{min-height:44px}
+.tabs a{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);text-decoration:none;font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+.tabs a:hover:not(.on){color:#fff;background:rgba(255,255,255,.09)}
+.tabs a.on{background:var(--g6);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 6px 14px -6px rgba(52,179,107,.8)}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.page{padding:24px 32px 32px}
+.head{display:flex;align-items:center;gap:16px;min-width:0}.act{justify-self:end;display:flex;gap:10px}
+.head .badge{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--g7);box-shadow:var(--sh);flex:none}
+.head .badge .ico{width:20px;height:20px}
+.head .txt{flex:1;min-width:0}
+.head h1{margin:0;font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.4px}
+.hb{display:inline-block;vertical-align:middle;margin:-4px 0 0 8px;padding:3px 12px;border-radius:999px;background:var(--g1);color:var(--g8);font-size:13px;font-weight:700;letter-spacing:0;white-space:nowrap}
+.hb.on{background:var(--g6);color:#fff}
+.head p{margin:5px 0 0;color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act .primary-btn{min-height:44px;padding:0 22px}
+input,select,button{font:inherit;font-size:13px;color:var(--ink)}
+input,select{min-height:42px;padding:9px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+select{-webkit-appearance:none;appearance:none;padding-right:40px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364746b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;cursor:pointer}
+input:focus,select:focus{border-color:var(--g6);box-shadow:0 0 0 3px rgba(31,138,76,.15)}
+button{cursor:pointer;border:0;border-radius:999px;font-weight:700;padding:9px 16px;background:#fff;color:var(--g8);transition:background .15s,box-shadow .15s}
+button:hover{background:var(--g1)}button:disabled{opacity:.55;cursor:wait}
+.primary-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;background:var(--g6);color:#fff;box-shadow:0 14px 24px -14px rgba(31,138,76,.95)}
+.primary-btn:hover{background:var(--g7)}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+.filters .lbl{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;margin-right:6px}
+.filters .lbl .ico{color:var(--g7)}
+.warn[hidden]{display:none}
+.warn{display:flex;align-items:center;gap:12px;background:#fff;color:var(--mut);border-radius:14px;padding:10px 16px;font-size:12.5px;line-height:1.7;margin-bottom:18px;box-shadow:var(--sh);overflow-wrap:anywhere}
+.warn::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--g5);flex:none;box-shadow:0 0 0 4px rgba(52,179,107,.16)}
+.box{background:#fff;border-radius:22px;padding:20px 22px;margin-bottom:18px;min-width:0;box-shadow:var(--sh)}
+.box h2{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:15px;font-weight:700;color:var(--ink)}
+.box h2::before{content:"";width:6px;height:18px;border-radius:3px;background:var(--g6);flex:none}
+.wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+.wrap::-webkit-scrollbar{width:8px;height:8px}.wrap::-webkit-scrollbar-thumb{background:#cfdbd4;border-radius:8px}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{background:var(--g0);color:var(--mut);font-weight:700;font-size:12px}
+td{border-bottom:1px solid #eef2ef}
+tr:hover td{background:#f1f8f4!important}
+@media(max-width:0px){.shell{margin:0;border-radius:0;min-height:100vh}.top{grid-template-columns:minmax(0,1fr) auto;gap:12px 10px;padding:12px 14px;border-radius:0}.bar .filters{padding-left:0;border-left:0;width:100%}.top .head .badge{display:none}.top>span{display:none}.page{padding:16px 14px 20px}.head h1{font-size:20px}.head p{white-space:normal}.act .primary-btn{min-height:40px;padding:0 14px}.k{min-height:104px}.filters>select,.filters>input{flex:1 1 140px}}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(165px,100%),1fr));gap:14px;margin-bottom:18px}
+.k{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:20px;padding:16px 18px 18px;min-height:122px;box-shadow:var(--sh)}
+.k small{font-size:12.5px;font-weight:600;color:var(--ink);padding-right:40px;line-height:1.4}
+.k b{margin-top:auto;padding-top:14px;font-size:28px;font-weight:700;letter-spacing:-.6px;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.kic{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--g1);color:var(--g7)}
+.k.tg{background:linear-gradient(180deg,#fff 30%,#eef8f2)}.k.tg b{color:var(--ok)}
+.k.es{background:linear-gradient(150deg,var(--g6) 0%,var(--g8) 70%,var(--g9) 100%);box-shadow:0 18px 30px -18px rgba(20,83,45,.9)}
+.k.es small,.k.es b{color:#fff}.k.es small{opacity:.88}.k.es .kic{background:rgba(255,255,255,.16);color:#fff}
+.box.dark{background:radial-gradient(130% 170% at 0% 0%,#34905c 0%,#23703f 45%,#1b5c35 100%);color:#fff;box-shadow:0 24px 40px -24px rgba(20,83,45,.75)}
+.box.dark h2{color:#fff}.box.dark h2::before{background:#5fe08f}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-bottom:18px}.grid2>.box{margin-bottom:0}
+.box h2.sp{margin-top:22px}
+.wrap{max-height:440px}
+table{font-size:13px}
+th,td{padding:10px 12px;text-align:right}
+th{position:sticky;top:0;z-index:1}
 th:first-child,td:first-child,td.l,th.l{text-align:left}
+tr:last-child th{position:static;background:var(--g1);color:var(--g8);font-size:12.5px}
 .good{color:var(--ok);font-weight:700}.bad{color:var(--red);font-weight:700}
-.warn{background:#fff;color:var(--mut);border:1px solid var(--line);border-left:4px solid var(--g7);padding:9px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px}
-#chart{width:100%;height:240px}
-@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.page{padding:14px}header{padding:14px}}
-.tabs{flex-basis:100%;display:flex;gap:6px;margin:-4px 0 2px}
-.tabs a{color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.12)}
-.tabs a.on{background:#fff;color:var(--g8)}.tabs a:hover:not(.on){background:rgba(255,255,255,.25)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.grid2>.box{margin-bottom:0}
-@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.ch{display:block;width:100%;overflow:visible}
+#cLocoCar,#cLocoPer{aspect-ratio:600/240}#cCost{aspect-ratio:600/240}
+.ch rect{fill:url(#gBar);rx:4px}
+.box.dark .ch rect{fill:url(#gBarD)}
+.ch text:not([fill]){fill:var(--mut);font-family:Sarabun,"Noto Sans Thai",Tahoma,sans-serif}
+.box.dark .ch text:not([fill]){fill:rgba(255,255,255,.75)}
+.box.dark .ch g line{stroke:rgba(255,255,255,.09)}
+@media(max-width:0px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:minmax(0,1fr)}.k b{font-size:23px}}
+.chead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 18px;margin-bottom:12px}
+.chead h2{margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:rgba(255,255,255,.72)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px}
+.legend .lu{background:linear-gradient(#7cf0a8,#2f9e5f)}.legend .ld{background:linear-gradient(#f87171,rgba(220,38,38,.35))}
+.legend .lt{width:18px;height:0;border-radius:0;border-top:3px dotted #f87171}
+.kstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:8px}
+.cs{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}
+.cs small{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.62)}
+.cs b{font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.15;font-variant-numeric:tabular-nums}
+.cs b u{margin-left:5px;text-decoration:none;font-size:12px;font-weight:600;letter-spacing:0;color:rgba(255,255,255,.55)}
+.cv{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin-top:2px}
+.dt{max-width:100%;margin-top:3px;font-size:11.5px;color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-block;max-width:100%;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip.up{background:rgba(110,231,156,.15);color:#86efac}.chip.dn{background:rgba(248,113,113,.16);color:#fca5a5}.chip.mut{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75)}
+.ct{gap:0}.cth{display:flex;align-items:baseline;justify-content:space-between;gap:8px;width:100%}.cth span{font-size:11.5px;color:rgba(255,255,255,.6);white-space:nowrap}.cth strong{color:#fff}
+.ctr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;width:100%;margin-top:3px}
+.ctc{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:4px;min-width:0}.ctc b{font-size:21px}.ctc.up b{color:#86efac}.ctc.nr b{color:#fde68a}.ctc.dn b{color:#fca5a5}
+.ctc u{text-decoration:none;font-size:11.5px;color:rgba(255,255,255,.55)}.ctc em{flex-basis:100%;font-style:normal;font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ctc.up em{color:#86efac}.ctc.nr em{color:#fde68a}.ctc.dn em{color:#fca5a5}
+.split{display:flex;gap:2px;width:100%;height:5px;margin-top:7px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08)}.split i{display:block;height:100%}.split .up{background:linear-gradient(90deg,#2f9e5f,#6ee79c)}.split .nr{background:linear-gradient(90deg,#fbbf24,#fde68a)}.split .dn{background:linear-gradient(90deg,#f87171,#dc2626)}
+.cth em{font-style:normal;font-weight:700}.cth em.up{color:#86efac}.cth em.dn{color:#fca5a5}.kmbox .cth em.up{color:#15803d}.kmbox .cth em.dn{color:#b91c1c}
+.chwrap{overflow-x:auto;scrollbar-width:thin}
+#chart{aspect-ratio:1000/210;min-width:760px}
+.ch2{display:block;width:100%;overflow:visible;font-family:Sarabun,"Noto Sans Thai",Tahoma,sans-serif}
+.ch2 .grid line{stroke:rgba(255,255,255,.18);stroke-dasharray:1 7;stroke-linecap:round}.ch2 .grid text{fill:rgba(255,255,255,.6);font-size:10.5px}
+.ch2 .xl{fill:rgba(255,255,255,.7);font-size:11px;font-weight:600}.ch2 .xl.sun{fill:#fca5a5}.ch2 .xm{fill:rgba(255,255,255,.42);font-size:9.5px;font-weight:500}
+.ch2 .bar{transform-box:fill-box;transform-origin:50% 100%;animation:grow .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.ch2 .up .bar{fill:#1f8a4c}.ch2 .dn .bar{fill:#1f8a4c}.ch2 .b:hover .bar{filter:brightness(1.2)}
+.ch2 .nil{fill:rgba(255,255,255,.18)}.ch2 .xl.sm{font-size:9.5px}.ch2 .tlab{font-size:10.5px;font-weight:700;fill:#dc2626;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.ch2 .dl{font-size:9.5px;font-weight:700}.ch2 .dl.mut{fill:rgba(255,255,255,.3)}.ch2 .rh{font-size:9.5px;font-weight:600;fill:rgba(255,255,255,.45)}.ch2 line.sep{stroke:rgba(255,255,255,.08)}
+.ch2 .vl{fill:rgba(255,255,255,.88);font-size:10.5px;font-weight:600;paint-order:stroke;stroke:#1f6a3f;stroke-width:3px;stroke-linejoin:round}
+.ch2 .vl.in{stroke:none}.ch2 .vl.on-up{fill:#0b2a18}.ch2 .vl.on-dn{fill:rgba(255,255,255,.9)}
+.ch2 .pl{font-size:10.5px;font-weight:700;paint-order:stroke;stroke:#1f6a3f;stroke-width:3px;stroke-linejoin:round}.ch2 .pu{fill:#86efac}.ch2 .pd{fill:#fca5a5}
+
+.ch2 line.tg{stroke:#ef4444;stroke-width:8;stroke-opacity:.1;stroke-linecap:round}.ch2 line.tl{stroke:#f87171;stroke-width:2.6;stroke-dasharray:.1 7;stroke-linecap:round}
+.ch2 .pill path{fill:rgba(127,29,29,.45);stroke:rgba(248,113,113,.6);stroke-width:1}.ch2 .pill text{font-size:11px;font-weight:700;fill:#fca5a5}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.ch2 .bar,.ch2 .vl,.ch2 .pl{animation:none}}
+@media(max-width:0px){.kstats{grid-template-columns:repeat(2,minmax(0,1fr))}.cs b{font-size:20px}}
+.kmbox{background:linear-gradient(180deg,#fff 0%,#fbfdfc 100%)}
+.kmbox .legend{color:var(--mut)}
+.kmbox .legend .lu{background:#1f8a4c}.kmbox .legend .ld{background:#e5534b}.kmbox .legend .lt{border-top-color:#dc2626}
+.kmbox .cs{background:var(--g0);border:1px solid var(--line)}
+.kmbox .cs small{color:var(--mut)}.kmbox .cs b{color:var(--ink)}.kmbox .cs b u,.kmbox .ctc u{color:var(--mut)}.kmbox .dt{color:var(--mut)}
+.kmbox .chip.up{background:#dcfce7;color:#15803d}.kmbox .chip.dn{background:#fee2e2;color:#b91c1c}.kmbox .chip.mut{background:#e8efeb;color:var(--mut)}
+.kmbox .cth span{color:var(--mut)}.kmbox .cth strong{color:var(--ink)}
+.kmbox .ctc.up b,.kmbox .ctc.up em{color:#15803d}.kmbox .ctc.nr b,.kmbox .ctc.nr em{color:#b45309}.kmbox .ctc.dn b,.kmbox .ctc.dn em{color:#b91c1c}
+.kmbox .split{background:#e5ece8}.kmbox .split .up{background:linear-gradient(90deg,#1f8a4c,#34b36b)}.kmbox .split .nr{background:linear-gradient(90deg,#f59e0b,#fbbf24)}.kmbox .split .dn{background:linear-gradient(90deg,#ef4444,#dc2626)}
+.kmbox .ch2 .grid line{stroke:#d5e0da}.kmbox .ch2 .grid text{fill:#8a9a91}
+.kmbox .ch2 .xl{fill:#3f4f46}.kmbox .ch2 .xl.sun{fill:#3f4f46;text-decoration:underline}.kmbox .ch2 .xm{fill:#8a9a91}
+.kmbox .ch2 .nil{fill:#dfe7e2}
+.kmbox .ch2 .vl{fill:#1f2d25;stroke:#fff}
+.kmbox .ch2 .dl.pu,.kmbox .ch2 .pu{fill:#15803d}.kmbox .ch2 .dl.pd,.kmbox .ch2 .pd{fill:#dc2626}.kmbox .ch2 .dl.mut{fill:#b7c2bc}
+.kmbox .ch2 .rh{fill:#8a9a91}.kmbox .ch2 line.sep{stroke:#e2e9e5}
+.kmbox .ch2 line.tg{stroke:#ef4444;stroke-opacity:.12}.kmbox .ch2 line.tl{stroke:#dc2626}
+.kmbox .ch2 .pill path{fill:#fee2e2;stroke:#fca5a5}.kmbox .ch2 .pill text{fill:#b91c1c}
+.wrap{background:#fff;border:1px solid var(--line);border-radius:14px}
+.wrap table{font-size:13px}
+.wrap thead th{position:sticky;top:0;z-index:2;padding:11px 14px;background:#f6f9f7;color:var(--mut);font-size:11.5px;font-weight:700;letter-spacing:.2px;border-bottom:1px solid var(--line)}
+.wrap tbody td{padding:10px 14px;border-bottom:1px solid #eef3f0;background:#fff}
+.wrap tbody tr:nth-child(even) td{background:#fff}
+.wrap tbody tr:last-child td{border-bottom:0}
+.wrap tbody tr:hover td{background:#f5faf7!important}
+.wrap tfoot th{position:sticky;bottom:0;z-index:2;padding:11px 14px;background:var(--g1);color:var(--g8);font-size:12.5px;font-weight:700;border-top:1px solid #d3e3d9}
+.wrap td b{font-weight:700;color:var(--ink)}.wrap td small,.wrap th small{font-size:11.5px;font-weight:500;color:var(--mut)}.wrap tfoot th small{color:var(--g7)}
+.muted{color:var(--mut)}
+.dchip{display:inline-block;min-width:46px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;text-align:center}
+.dchip.up{background:#dcfce7;color:#15803d}.dchip.dn{background:#fee2e2;color:#b91c1c}.dchip.mut{background:#eef2ef;color:var(--mut)}
+.pcell{display:flex;align-items:center;gap:10px}.pcell>span:last-child{min-width:48px;text-align:right;font-size:12.5px;font-weight:700}
+.pcell .up{color:#15803d}.pcell .nr{color:#b45309}.pcell .dn{color:#b91c1c}
+.pbar{flex:1;min-width:60px;height:6px;border-radius:99px;background:#e8efeb;overflow:hidden}.pbar i{display:block;height:100%;border-radius:99px}
+.pbar .up{background:#1f8a4c}.pbar .nr{background:#f59e0b}.pbar .dn{background:#e5534b}
+.wrap tr.sec td{padding:8px 14px;background:#f3f8f5;color:var(--g8);font-size:12px;font-weight:700;text-align:left}
+.wrap tr.callout td{padding:10px 12px}
+.co{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 14px;padding:10px 14px;border-radius:12px;text-align:left}
+tr.callout.dn .co{background:#fef2f2;border:1px solid #fecaca}tr.callout.up .co{background:#f0fdf4;border:1px solid #bbf7d0}
+.co b{font-size:14.5px}tr.callout.dn .co b{color:#b91c1c}tr.callout.up .co b{color:#15803d}.co small{font-size:11.5px;color:var(--mut)}
+.gpill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}.gpill.COCO{background:#e3f1e8;color:var(--g8)}.gpill.LOCO{background:#e0ebfb;color:#1d4ed8}
+.rk{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 4px;border-radius:999px;background:#eef2ef;color:var(--mut);font-size:11px;font-weight:700}
+.rk.t1{background:#fde68a;color:#92400e}.rk.t2{background:#e5e7eb;color:#374151}.rk.t3{background:#fed7aa;color:#9a3412}
+.dbar{display:flex;align-items:center;justify-content:flex-end;gap:10px}.dbar .pbar{max-width:180px}.dbar>span:last-child{min-width:52px;font-weight:700}
+.stk{display:flex;min-width:100px;height:8px;border-radius:99px;background:#e8efeb;overflow:hidden}.stk i{display:block;height:100%}
+.c1{background:#1f8a4c}.c2{background:#5fb98a}.c3{background:#b5dfc6}.c4{background:#d4a017}#tCost th,#tCost td{padding-left:8px;padding-right:8px}#tCost .stk{min-width:56px}
+.wrap th,.wrap td{padding-left:11px;padding-right:11px}#tCar th,#tCar td{padding-left:8px;padding-right:8px}#tCar .pbar{min-width:32px;max-width:60px}#tCar .pcell>span:last-child{min-width:44px}#tCar .pcell{gap:8px}
+.wrap th .dot{display:inline-block;width:8px;height:8px;margin-right:5px;border-radius:2px;vertical-align:middle}
+.lgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.lc{display:flex;flex-direction:column;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.lgrid>.lc:only-child{grid-column:1/-1}.lgrid>.lc:only-child .lbody{grid-template-columns:1fr 1fr;gap:20px}
+.lc.tot{grid-column:1/-1;background:var(--g0);border-color:#d3e3d9}
+.lch{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.lch b{font-size:14px;color:var(--ink)}.lc.tot .lch b{color:var(--g8)}.lch span{font-size:11.5px;color:var(--mut)}.lch strong{color:var(--ink)}
+.lbody{display:grid;gap:10px}.lc.tot .lbody{grid-template-columns:1fr 1fr;gap:20px}
+.lmet{display:flex;flex-direction:column;gap:6px}.lmet .pbar{display:block;flex:none;height:5px}
+.lm{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px}.lm .ll{font-size:12px;font-weight:600;color:var(--mut)}.lm .lv b{font-size:17px;font-weight:700;color:var(--ink)}.lm .lv small{font-size:11.5px;color:var(--mut)}
+#tLoco thead th{position:static;text-align:center}#tLoco thead th.l{text-align:left}#tLoco th.gh{background:#eef5f0;color:var(--g8);font-size:12px;border-bottom:1px solid var(--line)}
+#tLoco td,#tLoco th{text-align:center;padding-top:12px;padding-bottom:12px}#tLoco td.l,#tLoco th.l{text-align:left}#tLoco .gs{border-left:1px solid var(--line)}#tLoco tfoot .gs{border-left-color:#d3e3d9}
 </style></head><body>
-<header><nav class="tabs"><a class="on" href="index.html">ภาพรวม</a><a href="rest-hours.html">เวลาพัก พขร.</a><a href="driver-app.html">Driver App</a></nav><h1>Linde Fleet Dashboard<small>ระยะทาง · จำนวนรถ · อัตรากำลังคน เทียบ Target (รอบ 26–25)</small></h1>
-<select id="branch"><option value="">ทุกสาขา</option></select>
-<select id="cycle" title="รอบข้อมูล 26-25"></select><input type="date" id="from"><input type="date" id="to"><button id="reload">รีเฟรช</button></header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f8a4c"/><stop offset="1" stop-color="#9fd8b4"/></linearGradient><linearGradient id="gUp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fc477"/><stop offset="1" stop-color="#1f8a4c" stop-opacity=".8"/></linearGradient><linearGradient id="gDn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626" stop-opacity=".75"/></linearGradient><linearGradient id="gBarD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6ee79c"/><stop offset="1" stop-color="#6ee79c" stop-opacity=".22"/></linearGradient></defs></svg>
+<div class="shell">
+<header class="top"><div class="head"><span class="badge"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><div class="txt"><h1>Linde Fleet Dashboard <span id="hBranch" class="hb">ทุกสาขา</span></h1><p>ระยะทาง · จำนวนรถ · อัตรากำลังคน เทียบ Target (รอบ 26–25)</p></div></div>
+<div class="bar"><nav class="tabs"><a class="on" aria-current="page" href="index.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>ภาพรวม</a><a href="rest-hours.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>เวลาพัก พขร.</a><a href="driver-app.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>Driver App</a></nav><div class="filters"><span class="lbl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M7 12h10M10 18h4"/></svg>ตัวกรอง</span><select id="branch"><option value="">ทุกสาขา</option></select>
+<select id="cycle" title="รอบข้อมูล 26-25"></select><input type="date" id="from" title="ตั้งแต่วันที่"><input type="date" id="to" title="ถึงวันที่"></div></div><div class="act"><button id="reload" type="button" class="primary-btn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>รีเฟรช</button></div></header>
 <div class="page">
 <div id="status" class="warn">กำลังโหลด...</div>
 <div class="cards">
-<div class="k"><small>ระยะทางรวม COCO : กม.</small><b id="kKm">-</b></div>
-<div class="k es"><small>ประมาณการสิ้นเดือน COCO : กม.</small><b id="kProj">-</b></div>
-<div class="k tg"><small>เป้าระยะทาง COCO : กม.</small><b id="kTgt">-</b></div>
-<div class="k"><small>ระยะทาง/วัน COCO : กม.</small><b id="kDay">-</b></div>
-<div class="k"><small>ระยะทาง/คัน COCO : กม.</small><b id="kCar">-</b></div>
-<div class="k"><small>เที่ยวรวม COCO</small><b id="kTrip">-</b></div>
-<div class="k"><small>ค่าใช้จ่ายรวม : บาท</small><b id="kCost">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></span><small>ระยะทางรวม COCO : กม.</small><b id="kKm">-</b></div>
+<div class="k es"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg></span><small>ประมาณการสิ้นเดือน COCO : กม.</small><b id="kProj">-</b></div>
+<div class="k tg"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><small>เป้าระยะทาง COCO : กม.</small><b id="kTgt">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><small>ระยะทาง/วัน COCO : กม.</small><b id="kDay">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span><small>ระยะทาง/คัน COCO : กม.</small><b id="kCar">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span><small>เที่ยวรวม COCO</small><b id="kTrip">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><small>ค่าใช้จ่ายรวม : บาท</small><b id="kCost">-</b></div>
 </div>
-<div class="box"><h2>ระยะทางวิ่งงานประจำวัน COCO : กิโลเมตร (เส้นประ = Target/วัน)</h2><svg id="chart"></svg></div>
+<div class="box kmbox"><div class="chead"><h2>ระยะทางวิ่งงานประจำวัน COCO : กิโลเมตร</h2><div class="legend"><span><i class="lu"></i>ระยะทาง/วัน</span><span><i class="lt"></i>เป้า/วัน</span></div></div><div class="kstats" id="chartStats"></div><div class="chwrap"><svg id="chart" class="ch2"></svg></div></div>
 <div class="grid2">
-<div class="box"><h2>อัตรากำลังคนและรถขนส่ง เทียบ Target</h2><div class="wrap"><table id="tCrew"></table></div><h2 style="margin-top:18px">LOCO แยกสาขา</h2><div class="wrap"><table id="tLoco"></table></div></div>
-<div class="box"><h2>จำนวนรถต่อวัน (LOCO) เทียบ Target</h2><svg id="cLocoCar" style="width:100%;height:210px"></svg><h2 style="margin-top:18px">จำนวนคนต่อวัน (LOCO) เทียบ Target</h2><svg id="cLocoPer" style="width:100%;height:210px"></svg></div>
+<div class="box"><h2>อัตรากำลังคนและรถขนส่ง เทียบ Target</h2><div class="wrap"><table id="tCrew"></table></div></div>
+<div class="box"><h2>LOCO แยกสาขา</h2><div class="wrap"><table id="tLoco"></table></div></div>
+</div>
+<div class="grid2">
+<div class="box kmbox"><div class="chead"><h2>จำนวนรถต่อวัน (LOCO) เทียบ Target</h2><div class="legend"><span><i class="lu"></i>จำนวนรถ</span><span><i class="lt"></i>Target</span></div></div><svg id="cLocoCar" class="ch2"></svg></div>
+<div class="box kmbox"><div class="chead"><h2>จำนวนคนต่อวัน (LOCO) เทียบ Target</h2><div class="legend"><span><i class="lu"></i>จำนวนคน</span><span><i class="lt"></i>Target</span></div></div><svg id="cLocoPer" class="ch2"></svg></div>
 </div>
 <div class="grid2">
 <div class="box"><h2>ประมาณการระยะทางรายคันเทียบเป้า : กิโลเมตร</h2><div class="wrap"><table id="tCar"></table></div></div>
@@ -68,7 +206,8 @@ th:first-child,td:first-child,td.l,th.l{text-align:left}
 </div>
 <div class="grid2">
 <div class="box"><h2>ค่าใช้จ่ายแยกสาขา : บาท</h2><div class="wrap"><table id="tCost"></table></div></div>
-<div class="box"><h2>ค่าใช้จ่ายรายวัน : บาท</h2><svg id="cCost" style="width:100%;height:230px"></svg></div>
+<div class="box kmbox"><div class="chead"><h2>ค่าใช้จ่ายรายวัน : บาท</h2><div class="legend"><span><i class="lu"></i>ค่าใช้จ่าย/วัน</span></div></div><svg id="cCost" class="ch2"></svg></div>
+</div>
 </div>
 </div>
 
@@ -76,7 +215,8 @@ th:first-child,td:first-child,td.l,th.l{text-align:left}
 "use strict";
 const DATA_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vSWLQuTDK81qBHrVGIrbfLMQd2SbGcmeVPqgnd5RNzIKEYFYgenm6kofz8bzaLI-wmSnY6oZE8759Vy/pub?gid=1490125939&single=true&output=csv";
 const TARGET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vSWLQuTDK81qBHrVGIrbfLMQd2SbGcmeVPqgnd5RNzIKEYFYgenm6kofz8bzaLI-wmSnY6oZE8759Vy/pub?gid=1776706184&single=true&output=csv";
-const MAX_TRIP_KM=3000; // ระยะทางต่อแถวที่เกินนี้ถือว่าผิดปกติ ไม่นำมารวม
+const MAX_TRIP_KM=3000;
+const NEAR_PCT=90; // รถที่คาดการณ์ได้ตั้งแต่ % นี้ของเป้า (แต่ยังไม่ถึง 100%) ถือว่า "ใกล้ถึงเป้า" // ระยะทางต่อแถวที่เกินนี้ถือว่าผิดปกติ ไม่นำมารวม
 // ใส่ gid ของแท็บ Master car / Master driver (ดูจาก URL ตอนเปิดแท็บ: ...#gid=ตัวเลข)
 const MASTER_CAR_GID="1668913986", MASTER_DRIVER_GID="459940419";
 const SHEET_BASE=DATA_URL.split("gid=")[0];
@@ -99,7 +239,7 @@ const nm=v=>tx(v).replace(/^(นางสาว|น\.ส\.|นาย|นาง)\
 const cv=(r,ns,i)=>{for(const n of ns)if(r[n]!==undefined)return num(r[n]);return num(Object.values(r)[i])};
 function norm(r){const d=pdate(r["ว/ด/ป"]);const type=tx(r["ประเภทรถ"]);
 const o={date:d,k:dk(d),help:/ช่วย/.test(tx(r["สาขา"])),head:pl(r["ทะเบียนหัว"]),tail:pl(r["เบอร์หาง"]),plate:pl(r["ทะเบียนหัว"]),driver:nm(r["ชื่อพขร. (หลัก)"]),driver2:nm(r["ชื่อพขร. (เสริม)"]),
-branch:tx(r["สาขา"])||"ไม่ระบุ",group:type?"COCO":"LOCO",km:num(r["ระยะทางรวม"]),toll:cv(r,["ค่าทางด่วน (บาท)","ค่าทางด่วน"],9),hotel:cv(r,["ค่าห้องพัก (บาท)","ค่าห้องพัก"],10),travel:cv(r,["ค่าเดินทาง (บาท)","ค่าเดินทาง"],11)};o.cost=o.toll+o.hotel+o.travel;o.car=o.group==="LOCO"?(/^ระยอง/.test(o.branch)?(o.head?"":o.tail):o.head):o.head;return o}
+branch:tx(r["สาขา"])||"ไม่ระบุ",group:type?"COCO":"LOCO",km:num(r["ระยะทางรวม"]),toll:cv(r,["ค่าทางด่วน (บาท)","ค่าทางด่วน"],9),hotel:cv(r,["ค่าห้องพัก (บาท)","ค่าห้องพัก","ค่าที่พัก (บาท)","ค่าที่พัก"],10),travel:cv(r,["ค่าเดินทาง (บาท)","ค่าเดินทาง"],11)};o.cost=o.toll+o.hotel+o.travel;o.car=o.group==="LOCO"?(/^ระยอง/.test(o.branch)?(o.head?"":o.tail):o.head):o.head;return o}
 function normT(r){return{type:tx(r["ประเภท"]),item:tx(r["รายการ"]),group:tx(r["กลุ่มงาน"]),branch:tx(r["สาขา"]),val:num(r["ค่า Target"]),start:pdate(r["เริ่มใช้วันที่"]),end:pdate(r["สิ้นสุดวันที่"])}}
 // Target: CAR รวมสัญญาย่อยของสาขา (ระยองสัญญา 1, 2, 10W) / อื่นๆ ใช้ชื่อสาขาตรงตัว
 function tgt(type,group,branch){const L=targets.filter(t=>t.type===type&&t.group===group);
@@ -111,80 +251,133 @@ return rows.filter(r=>r.k&&!r.help&&(!f||r.k>=f)&&(!t||r.k<=t)&&(!b||r.branch===
 function cycleOf(d){const st=d.getDate()>=26?new Date(d.getFullYear(),d.getMonth(),26):new Date(d.getFullYear(),d.getMonth()-1,26);return[st,new Date(st.getFullYear(),st.getMonth()+1,25)]}
 const dm=d=>d.toLocaleDateString("th-TH",{day:"numeric",month:"short"});
 const uniq=a=>new Set(a.filter(Boolean)).size;
-function render(){const R=sel(),b=$("branch").value;
-const f=$("from").value,t=$("to").value;if(!R.length){$("status").textContent="ไม่พบข้อมูลในช่วงที่เลือก";return}
+function render(){const R=sel(),b=$("branch").value;$("hBranch").textContent=b?"สาขา"+b:"ทุกสาขา";$("hBranch").classList.toggle("on",!!b);
+const f=$("from").value,t=$("to").value;if(!R.length){msg("ไม่พบข้อมูลในช่วงที่เลือก");return}
 const ds=R.map(r=>r.k).sort(),first=pdate(f||ds[0]),last=pdate(ds[ds.length-1]);
 const days=Math.max(1,Math.round((last-first)/864e5)+1),cyc=cycleOf(last),dim=Math.round((cyc[1]-cyc[0])/864e5)+1;
 const RC=R.filter(r=>r.group==="COCO");
 const cars=uniq(RC.map(r=>r.car)),km=RC.reduce((a,r)=>a+r.km,0);
 const proj=km/days*dim;
-const kmT=(()=>{const bs=b?[b]:[...new Set(R.map(r=>r.branch))];let s=0;bs.forEach(x=>{s+=(tgt("KM","COCO",x)||0)*(tgt("CAR","COCO",x)||0)});return s})();
+const kmT=(()=>{const bs=b?[b]:[...new Set(R.map(r=>r.branch))];let s=0;bs.forEach(x=>{s+=(tgt("KM","COCO",x)||0)*(tgt("CAR","COCO",x)||0)});return s})(),tCars=(b?[b]:[...new Set(R.map(r=>r.branch))]).reduce((a,x)=>a+(tgt("KM","COCO",x)?(tgt("CAR","COCO",x)||0):0),0);
 $("kKm").textContent=fmt(km);$("kProj").textContent=fmt(proj);$("kTgt").textContent=kmT?fmt(kmT):"No data";
 $("kDay").textContent=fmt(km/days);$("kCar").textContent=fmt(cars?km/cars:0);$("kTrip").textContent=fmt(RC.length);$("kCost").textContent=fmt(R.reduce((a,r)=>a+r.cost,0));
-$("status").textContent=`รอบ ${dm(cyc[0])} – ${dm(cyc[1])} ${cyc[1].getFullYear()+543} · ข้อมูล ${fmt(R.length)} เที่ยว · ${fmt(days)} วัน`+(bad?` · ไม่นำมารวม ${bad} แถวที่ระยะทางผิดปกติ (>${MAX_TRIP_KM} กม. หรือติดลบ)`:"")+(masterWarn?" · "+masterWarn:"");
-chart(RC,kmT/dim);dailyBars("cLocoCar",R,"LOCO",r=>[r.car],tgt("CAR","LOCO",b));dailyBars("cLocoPer",R,"LOCO",r=>[r.driver,r.driver2],tgt("PERSON","LOCO",b));crew(R,b);locoTable(R);carTable(R,days,dim,b);drvTable(R);costTable(R);costBars(R)}
-function chart(R,tline){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.km));
-const e=[...m].sort((a,b)=>a[0]<b[0]?-1:1),W=1000,H=240,pl=50,pb=26,mx=Math.max(1,tline,...e.map(x=>x[1])),bw=(W-pl)/e.length;
-let s=`<g stroke="#dfe6e2">${[0,.5,1].map(p=>`<line x1="${pl}" x2="${W}" y1="${(H-pb)*(1-p)+8}" y2="${(H-pb)*(1-p)+8}"/>`).join("")}</g>`;
-e.forEach(([k,v],i)=>{const h=v/mx*(H-pb-14),x=pl+i*bw+bw*.15;
-s+=`<rect x="${x}" y="${H-pb-h}" width="${bw*.7}" height="${h}" fill="#166534"/><text x="${x+bw*.35}" y="${H-pb-h-3}" font-size="10" text-anchor="middle">${fmt(v)}</text>`;
-if(e.length<=31||i%3==0)s+=`<text x="${x+bw*.35}" y="${H-8}" font-size="10" text-anchor="middle">${k.slice(8)}</text>`});
-if(tline){const y=H-pb-tline/mx*(H-pb-14);s+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="#ea580c" stroke-width="2" stroke-dasharray="6 4"/>`}
-s+=`<text x="4" y="14" font-size="10">${fmt(mx)}</text>`;$("chart").setAttribute("viewBox",`0 0 ${W} ${H}`);$("chart").innerHTML=s}
+msg(masterWarn);
+const cm=new Map();RC.forEach(r=>{if(!r.car)return;const o=cm.get(r.car)||{km:0,b:r.branch};o.km+=r.km;cm.set(r.car,o)});let cH=0,cN=0,cM=0,aH=0,aN=0,aM=0,aKm=0,aT=0;cm.forEach(o=>{const t=tgt("KM","COCO",o.b);if(t){const q=o.km/days*dim/t*100,qa=o.km/t*100;if(q>=100)cH++;else if(q>=NEAR_PCT)cN++;else cM++;if(qa>=100)aH++;else if(qa>=NEAR_PCT)aN++;else aM++;aKm+=o.km;aT+=t}});
+chart(RC,kmT/dim,{avg:km/days,proj,kmT,cars,tCars,dim,cH,cN,cM,aH,aN,aM,aKm,aT});dailyBars("cLocoCar",R,"LOCO",r=>[r.car],tgt("CAR","LOCO",b));dailyBars("cLocoPer",R,"LOCO",r=>[r.driver,r.driver2],tgt("PERSON","LOCO",b));crew(R,b);locoTable(R);carTable(R,days,dim,b);drvTable(R);costTable(R);costBars(R)}
+function chart(R,tline,S){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.km));
+const e=[...m].sort((a,b)=>a[0]<b[0]?-1:1),n=e.length,T=tline>0?tline:0,avg=S.avg||0;
+const W=1000,H=210,pl=58,pr=14,pt=20,pb=T?46:28,cw=W-pl-pr,chh=H-pt-pb,base=pt+chh;
+const nice=v=>{const p=Math.pow(10,Math.floor(Math.log10(v/4))),st=[1,1.5,2,2.5,3,4,5,6,8,10].map(x=>x*p).find(x=>x*4>=v);return st*4};
+const mx=nice(Math.max(1,T,...e.map(x=>x[1]))*1.05),Y=v=>base-v/mx*chh;
+const k1=v=>v>=1e3?fmt(v/1e3,1)+"k":fmt(v),pc=(a,t)=>(a-t)/t*100;
+const rr=(x,y,w,h,r)=>`M${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}H${x+r}Q${x},${y+h} ${x},${y+h-r}V${y+r}Q${x},${y} ${x+r},${y}Z`;
+let s='<g class="grid">',lb="";
+for(let i=0;i<=4;i++){const v=mx*i/4,y=Y(v);s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/><text x="${pl-8}" y="${y+3.5}" text-anchor="end">${i?k1(v):"0"}</text>`}
+s+="</g>";
+if(T)s+=`<line class="sep" x1="${pl}" x2="${W-pr}" y1="${base+22}" y2="${base+22}"/>`;
+const bw=cw/Math.max(1,n),w=Math.min(30,bw*.52),dense=n>14;let hit=0,prevM="";
+e.forEach(([k,v],i)=>{const x=pl+i*bw+(bw-w)/2,cx=x+w/2,d=pdate(k),mo=d.toLocaleDateString("th-TH",{month:"short"});
+s+=`<text class="xl${d.getDay()===0?" sun":""}" x="${cx}" y="${base+15}" text-anchor="middle">${d.getDate()}${mo!==prevM?`<tspan class="xm"> ${mo}</tspan>`:""}</text>`;prevM=mo;
+if(v<=0){s+=`<g class="b"><title>${dm(d)} · ไม่มีระยะทาง</title><path class="nil" d="${rr(x,base-2,w,2,1)}"/></g>`;if(T)s+=`<text class="dl mut" x="${cx}" y="${base+37}" text-anchor="middle">–</text>`;return}
+const yt=Y(v),h=base-yt,r=Math.min(3,w/2,h),p=T?pc(v,T):0,up=!T||v>=T;if(T&&up)hit++;
+const tip=`${dm(d)} · ${fmt(v)} กม.`+(T?` · เป้า ${fmt(T)} · ${p>=0?"เกินเป้า":"ต่ำกว่าเป้า"} ${fmt(Math.abs(v-T))} กม. (${fmt(Math.abs(p),1)}%)`:"");
+s+=`<g class="b ${up?"up":"dn"}" style="--d:${i*22}ms"><title>${tip}</title><path class="bar" d="M${x},${base}V${yt+r}Q${x},${yt} ${x+r},${yt}H${x+w-r}Q${x+w},${yt} ${x+w},${yt+r}V${base}Z"/></g>`;
+lb+=`<text class="vl" x="${cx}" y="${yt-5}" text-anchor="middle">${n>20?fmt(v/1e3,1):dense?k1(v):fmt(v)}</text>`;
+if(T)s+=`<text class="dl ${up?"pu":"pd"}" x="${cx}" y="${base+37}" text-anchor="middle">${p>=0?"▲":"▼"}${fmt(Math.abs(p),Math.abs(p)<1?1:0)}${n>20?"":"%"}</text>`});if(n>20)lb+=`<text class="rh" x="${pl-8}" y="${pt-8}" text-anchor="end">พัน กม.</text>`;
+if(T){const y=Y(T);s+=`<line class="tg" x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/><line class="tl" x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/>`;lb+=`<text class="rh" x="${pl-8}" y="${base+37}" text-anchor="end">% เป้า</text>`}
+{const lt=$("chart").closest(".box").querySelector(".legend .lt");if(lt)lt.parentNode.lastChild.textContent=T?"เป้า/วัน "+fmt(T)+" กม.":"เป้า/วัน: ไม่มีข้อมูล"}const sv=$("chart");sv.setAttribute("viewBox",`0 0 ${W} ${H}`);sv.innerHTML=n?s+lb:`<text class="xl" x="${W/2}" y="${H/2}" text-anchor="middle">ไม่มีข้อมูล</text>`;
+const pcd=S.cars?avg/S.cars:0,tPC=S.tCars?S.kmT/S.tCars:0,prC=pcd*S.dim,st=(a,t)=>a>=t?"up":"dn",gap=(a,t,u)=>(a>=t?"เกิน ":"ขาด ")+fmt(Math.abs(a-t))+" "+u;
+const chip=(c,t)=>`<span class="chip ${c}">${t}</span>`,tile=(lab,val,c,dt)=>`<div class="cs"><small>${lab}</small><div class="cv"><b>${val}<u>กม.</u></b>${c}</div><span class="dt">${dt}</span></div>`;
+const pchip=(a,t)=>chip(st(a,t),(a>=t?"▲ ":"▼ ")+fmt(Math.abs(pc(a,t)),1)+"%");
+const tri=(lab,right,unit,H,Nr,M,tt)=>{const N=H+Nr+M,pp=x=>fmt(x/N*100,1)+"%",w=x=>(x/N*100).toFixed(2)+"%",col=(c,v,t)=>`<div class="ctc ${c}"><b>${fmt(v)}</b><u>${unit}</u><em>${t} ${pp(v)}</em></div>`,seg=(c,v)=>v?`<i class="${c}" style="width:${w(v)}"></i>`:"";return `<div class="cs ct" title="${tt}"><div class="cth"><small>${lab}</small><span>${right}</span></div><div class="ctr">${col("up",H,"▲ เกินเป้า")}${col("nr",Nr,"● ใกล้ถึง")}${col("dn",M,"▼ ต่ำกว่า")}</div><div class="split">${seg("up",H)}${seg("nr",Nr)}${seg("dn",M)}</div></div>`};
+const crit=`เกินเป้า = ≥ 100% ของเป้า · ใกล้ถึงเป้า = ${NEAR_PCT}–99.9% · ต่ำกว่าเป้า = ต่ำกว่า ${NEAR_PCT}%`;
+const ct=()=>{const H=S.cH||0,Nr=S.cN||0,M=S.cM||0,N=H+Nr+M;if(!N)return `<div class="cs"><small>คาดการณ์สิ้นเดือน · รถเทียบเป้าต่อคัน</small><div class="cv"><b>-</b>${chip("mut","ไม่มีเป้า")}</div></div>`;return tri("คาดการณ์สิ้นเดือน · รถเทียบเป้าต่อคัน",`รวม <strong>${fmt(N)}</strong> คัน`,"คัน",H,Nr,M,"เทียบคาดการณ์สิ้นเดือนของแต่ละคันกับเป้าต่อคัน · "+crit)};
+const dt3=()=>{const H=S.aH||0,Nr=S.aN||0,M=S.aM||0,N=H+Nr+M;if(!N)return tile("สะสมจริงต่อคัน","-",chip("mut","ไม่มีเป้า"),"");const av=S.aKm/N,at=S.aT/N,p=av/at*100;return tri(`สะสมจริงต่อคัน · ${fmt(N)} คัน`,`<strong>${fmt(av)}</strong> / ${fmt(at)} กม. <em class="${p>=100?"up":"dn"}">${fmt(p,1)}%</em>`,"คัน",H,Nr,M,`ระยะทางที่วิ่งจริงสะสมถึงวันนี้ของแต่ละคัน เทียบเป้าทั้งเดือนของคันนั้น (ยังไม่ใช่คาดการณ์) · เฉลี่ย ${fmt(av)} กม./คัน จากเป้า ${fmt(at)} กม./คัน · ${fmt(pcd)} กม./คัน/วัน · เกินเป้า = สะสม ≥ 100% ของเป้าเดือน · ใกล้ถึงเป้า = ${NEAR_PCT}–99.9% · ต่ำกว่าเป้า = ต่ำกว่า ${NEAR_PCT}%`)};
+$("chartStats").innerHTML=T?
+tile("เป้าหมายต่อวัน",fmt(T),chip("mut",`ถึงเป้า ${hit}/${n} วัน`),`เป้าเดือน ${fmt(S.kmT)} กม.`+(S.tCars?` · ${fmt(S.tCars)} คัน`:""))+
+dt3()+
+tile("คาดการณ์สิ้นเดือน · รวม",fmt(S.proj),chip(st(S.proj,S.kmT),fmt(S.proj/S.kmT*100,1)+"%"),`เป้า ${fmt(S.kmT)} · `+gap(S.proj,S.kmT,"กม."))+
+ct()
+:tile("เป้าหมายต่อวัน","-",chip("mut","ยังไม่มี Target"),"")+tile("เฉลี่ยจริงต่อวัน",fmt(avg),"",S.cars?`${fmt(pcd)} กม./คัน/วัน`:"")+tile("คาดการณ์สิ้นเดือน · รวม",fmt(S.proj),"","")+ct()}
 function cmp(a,t,d=0){if(t==null)return'<td>No data</td><td>-</td>';
 const ok=a>=t;return`<td>${fmt(t,d)}</td><td class="${ok?"good":"bad"}">${fmt(a-t,d)}</td>`}
 function dailyBars(id,R,g,pick,tline){const m=new Map();R.filter(r=>r.group===g&&(g!=="LOCO"||r.car)).forEach(r=>{const a=m.get(r.k)||new Set();pick(r).forEach(x=>x&&a.add(x));m.set(r.k,a)});
-const e=[...m].map(([k,a])=>[k,a.size]).sort((a,b)=>a[0]<b[0]?-1:1),W=500,H=220,pb=24,mx=Math.max(1,tline||0,...e.map(x=>x[1])),bw=W/Math.max(1,e.length);
-let s="";e.forEach(([k,v],i)=>{const h=v/mx*(H-pb-18),x=i*bw+bw*.15;
-s+=`<rect x="${x}" y="${H-pb-h}" width="${bw*.7}" height="${h}" fill="#166534"/><text x="${x+bw*.35}" y="${H-pb-h-3}" font-size="10" text-anchor="middle">${v}</text>`;
-if(e.length<=31||i%3==0)s+=`<text x="${x+bw*.35}" y="${H-8}" font-size="10" text-anchor="middle">${k.slice(8)}</text>`});
-if(tline){const y=H-pb-tline/mx*(H-pb-18);s+=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="#ea580c" stroke-width="2" stroke-dasharray="6 4"/><text x="${W-2}" y="${y-4}" font-size="10" fill="#ea580c" text-anchor="end">Target ${fmt(tline,1)}</text>`}
-if(!e.length)s='<text x="10" y="30" font-size="12">ไม่มีข้อมูล LOCO ในช่วงนี้</text>';
-$(id).setAttribute("viewBox",`0 0 ${W} ${H}`);$(id).innerHTML=s}
+const e=[...m].map(([k,a])=>[k,a.size]).sort((a,b)=>a[0]<b[0]?-1:1),n=e.length,T=tline>0?tline:0;
+const W=600,H=240,pl=30,pr=12,pt=22,pb=40,cw=W-pl-pr,chh=H-pt-pb,base=pt+chh;
+const step=Math.max(1,Math.ceil(Math.max(1,T,...e.map(x=>x[1]))*1.12/4)),mx=step*4,Y=v=>base-v/mx*chh;
+const rr=(x,y,w,h,r)=>`M${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}H${x+r}Q${x},${y+h} ${x},${y+h-r}V${y+r}Q${x},${y} ${x+r},${y}Z`;
+let s='<g class="grid">',lb="";
+for(let i=0;i<=4;i++){const y=Y(step*i);s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/><text x="${pl-7}" y="${y+3.5}" text-anchor="end">${step*i}</text>`}
+s+="</g>";
+const bw=cw/Math.max(1,n),w=Math.min(24,bw*.55);let prevM="";
+e.forEach(([k,v],i)=>{const x=pl+i*bw+(bw-w)/2,cx=x+w/2,d=pdate(k),mo=d.toLocaleDateString("th-TH",{month:"short"});
+s+=`<text class="xl${d.getDay()===0?" sun":""}${n>20?" sm":""}" x="${cx}" y="${base+16}" text-anchor="middle">${d.getDate()}</text>`+(mo!==prevM?`<text class="xm" x="${cx}" y="${base+30}" text-anchor="middle">${mo}</text>`:"");prevM=mo;
+const yt=Y(v),r=Math.min(3,w/2,base-yt);
+s+=`<g class="b up" style="--d:${i*22}ms"><title>${dm(d)} · ${v}${T?` · Target ${fmt(T,1)} · ${v>=T?"ถึงเป้า":"ต่ำกว่าเป้า "+fmt(T-v,1)}`:""}</title><path class="bar" d="M${x},${base}V${yt+r}Q${x},${yt} ${x+r},${yt}H${x+w-r}Q${x+w},${yt} ${x+w},${yt+r}V${base}Z"/></g>`;
+lb+=`<text class="vl" x="${cx}" y="${yt-5}" text-anchor="middle">${v}</text>`});
+if(T){const y=Y(T);s+=`<line class="tg" x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/><line class="tl" x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/>`;}
+{const lt=$(id).closest(".box").querySelector(".legend .lt");if(lt)lt.parentNode.lastChild.textContent=T?"Target "+fmt(T,1):"Target: ไม่มีข้อมูล"}$(id).setAttribute("viewBox",`0 0 ${W} ${H}`);$(id).innerHTML=n?s+lb:`<text class="xl" x="${W/2}" y="${H/2}" text-anchor="middle">ไม่มีข้อมูล LOCO ในช่วงนี้</text>`}
 const mCars=b=>uniq(MC.filter(x=>!b||x.branch===b).map(x=>x.plate));
 const mDrv=(b,pos)=>{const to=$("to").value;return uniq(MD.filter(x=>(!b||x.branch===b)&&(!pos||(pos==="OIL"?x.pos.trim().toUpperCase()==="OIL":(pos==="22W"?/^(22W|MHC)$/:new RegExp("^"+pos+"$")).test(x.pos.replace(/\s/g,"").toUpperCase())))&&!(x.leave&&to&&dk(x.leave)<=to)).map(x=>x.name))};
+function costBars(R){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.cost));
+const e=[...m].sort((a,b)=>a[0]<b[0]?-1:1),n=e.length;
+const W=600,H=240,pl=40,pr=10,pt=22,pb=40,cw=W-pl-pr,chh=H-pt-pb,base=pt+chh;
+const nice=v=>{const p=Math.pow(10,Math.floor(Math.log10(v/4))),st=[1,1.5,2,2.5,3,4,5,6,8,10].map(x=>x*p).find(x=>x*4>=v);return st*4};
+const mx=nice(Math.max(1,...e.map(x=>x[1]))*1.08),Y=v=>base-v/mx*chh,k1=v=>v>=1e3?fmt(v/1e3,1)+"k":fmt(v);
+let s='<g class="grid">',lb="";
+for(let i=0;i<=4;i++){const v=mx*i/4,y=Y(v);s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/><text x="${pl-7}" y="${y+3.5}" text-anchor="end">${i?k1(v):"0"}</text>`}
+s+="</g>";
+const bw=cw/Math.max(1,n),w=Math.min(24,bw*.55);let prevM="";
+e.forEach(([k,v],i)=>{const x=pl+i*bw+(bw-w)/2,cx=x+w/2,d=pdate(k),mo=d.toLocaleDateString("th-TH",{month:"short"});
+s+=`<text class="xl${d.getDay()===0?" sun":""}${n>20?" sm":""}" x="${cx}" y="${base+16}" text-anchor="middle">${d.getDate()}</text>`+(mo!==prevM?`<text class="xm" x="${cx}" y="${base+30}" text-anchor="middle">${mo}</text>`:"");prevM=mo;
+if(v<=0){s+=`<g class="b"><title>${dm(d)} · ไม่มีค่าใช้จ่าย</title><path class="nil" d="M${x},${base-2}h${w}v2h${-w}Z"/></g>`;return}
+const yt=Y(v),r=Math.min(3,w/2,base-yt);
+s+=`<g class="b up" style="--d:${i*22}ms"><title>${dm(d)} · ${fmt(v)} บาท</title><path class="bar" d="M${x},${base}V${yt+r}Q${x},${yt} ${x+r},${yt}H${x+w-r}Q${x+w},${yt} ${x+w},${yt+r}V${base}Z"/></g>`;
+lb+=`<text class="vl" x="${cx}" y="${yt-5}" text-anchor="middle">${n>20?fmt(v/1e3,0):k1(v)}</text>`});
+if(n>20)lb+=`<text class="rh" x="${W-pr}" y="${pt-8}" text-anchor="end">หน่วย: พันบาท</text>`;
+$("cCost").setAttribute("viewBox",`0 0 ${W} ${H}`);$("cCost").innerHTML=n?s+lb:`<text class="xl" x="${W/2}" y="${H/2}" text-anchor="middle">ไม่มีข้อมูล</text>`}
+const chipD=(a,t,d=0)=>{if(t==null)return'<span class="dchip mut">-</span>';const x=a-t;return`<span class="dchip ${x>=0?"up":"dn"}">${x>0?"+":x<0?"−":""}${fmt(Math.abs(x),d)}</span>`};
+const pbar=(p,c)=>`<span class="pbar"><i class="${c}" style="width:${Math.max(0,Math.min(100,p)).toFixed(1)}%"></i></span>`;
+const stc=p=>p>=100?"up":p>=NEAR_PCT?"nr":"dn";
+const pcell=(a,t)=>{if(!t)return'<span class="muted">No data</span>';const p=a/t*100,c=a>=t?"up":"dn";return`<div class="pcell">${pbar(p,c)}<span class="${c}">${fmt(p,0)}%</span></div>`};
 function locoTable(R){const bs=[...new Set(R.map(r=>r.branch))].sort((a,b)=>a.localeCompare(b,"th"));
-const dc=(a,t)=>t==null?"<td>-</td><td>-</td>":`<td>${fmt(t)}</td><td class="${a>=t?"good":"bad"}">${fmt(a-t)}</td>`;
-const row=(n,p,tp,c,tc,tag)=>`<tr><${tag} class="l">${n}</${tag}><${tag}>${fmt(p)}</${tag}>${dc(p,tp)}<${tag}>${fmt(c)}</${tag}>${dc(c,tc)}<${tag}>${c?fmt(p/c,3):"-"}</${tag}></tr>`;
-let h='<tr><th class="l">สาขา</th><th>พขร.</th><th>Target</th><th>Diff</th><th>รถ</th><th>Target</th><th>Diff</th><th>Ratio</th></tr>',P=0,C=0,TP=0,TC=0,kp=false,kc=false;
+const grp=(a,t,tag)=>`<${tag} class="gs"><b>${fmt(a)}</b></${tag}><${tag}>${t==null?"-":fmt(t)}</${tag}><${tag}>${chipD(a,t)}</${tag}>`;
+const row=(n,p,tp,c,tc,tag)=>`<tr><${tag} class="l">${n}</${tag}>${grp(p,tp,tag)}${grp(c,tc,tag)}<${tag} class="gs">${c?fmt(p/c,3):"-"}</${tag}></tr>`;
+let h="",P=0,C=0,TP=0,TC=0,kp=false,kc=false;
 bs.forEach(br=>{const G=R.filter(r=>r.branch===br&&r.group==="LOCO"&&r.car),c=uniq(G.map(r=>r.car)),
 p=(/^ระยอง/.test(br)&&MD.length)?mDrv(br,"10W"):uniq(G.flatMap(r=>[r.driver,r.driver2])),tp=tgt("PERSON","LOCO",br),tc=tgt("CAR","LOCO",br);
 P+=p;C+=c;if(tp!=null){TP+=tp;kp=true}if(tc!=null){TC+=tc;kc=true}h+=row(esc(br),p,tp,c,tc,"td")});
-if(bs.length>1){const t=(a,k)=>k?`<th>${fmt(a)}</th><th></th>`:"<th>-</th><th></th>";
-h+=`<tr><th class="l">รวม</th><th>${fmt(P)}</th>${t(TP,kp)}<th>${fmt(C)}</th>${t(TC,kc)}<th>${C?fmt(P/C,3):"-"}</th></tr>`}
-$("tLoco").innerHTML=h}
-function crew(R,b){let h='<tr><th class="l">รายการ</th><th>จริง</th><th>Target</th><th>Diff</th></tr>';
-const sec=t=>`<tr><td colspan="4" style="background:#f0f6f2;font-weight:700;color:var(--g8);text-align:left">${t}</td></tr>`;
+$("tLoco").innerHTML='<thead><tr><th class="l">สาขา</th><th class="gs">พขร.</th><th>Target</th><th>Diff</th><th class="gs">รถ</th><th>Target</th><th>Diff</th><th class="gs">Ratio</th></tr></thead><tbody>'+
+(h||'<tr><td colspan="8" class="l muted">ไม่มีข้อมูล LOCO</td></tr>')+'</tbody>'+(bs.length>1?'<tfoot>'+row("รวม",P,kp?TP:null,C,kc?TC:null,"th")+'</tfoot>':"")}
+function crew(R,b){const sec=t=>`<tr class="sec"><td colspan="4">${t}</td></tr>`;
 const act=(g,pos)=>{const G=R.filter(r=>r.group===g&&(g!=="LOCO"||r.car));let c=uniq(G.map(r=>r.car)),p=uniq(G.flatMap(r=>[r.driver,r.driver2]));if(g==="COCO"&&MC.length)c=mCars(b);if(MD.length)p=mDrv(b,pos);return[c,p]};
-const grp=(g,pos)=>{const[c,p]=act(g,pos),tp=tgt("PERSON",g,b),tc=tgt("CAR",g,b),ra=c?p/c:0,tr=tp!=null&&tc?tp/tc:null;
-h+=`<tr><td class="l">พขร. ${g} (${pos==="22W"?"22W + MHC":pos})</td><td>${fmt(p)} คน</td>${cmp(p,tp)}</tr><tr><td class="l">จำนวนรถ ${g}</td><td>${fmt(c)} คัน</td>${cmp(c,tc)}</tr>`;
-h+=`<tr><td class="l">Driver Ratio ${g}</td><td>${c?fmt(ra,3):"No data"}</td>${tr==null?"<td>No data</td><td>-</td>":`<td>${fmt(tr,3)}</td><td class="${ra>=tr?"good":"bad"}">${fmt(ra-tr,3)}</td>`}</tr>`;return{p,tp}};
+const line=(lab,a,u,t,d=0)=>`<tr><td class="l">${lab}</td><td><b>${a==null?"No data":fmt(a,d)}</b>${u&&a!=null?` <small>${u}</small>`:""}</td><td>${t==null?"No data":fmt(t,d)}</td><td>${a==null?'<span class="dchip mut">-</span>':chipD(a,t,d)}</td></tr>`;
+let h="";
+const grp=(g,pos)=>{const[c,p]=act(g,pos),tp=tgt("PERSON",g,b),tc=tgt("CAR",g,b),ra=c?p/c:null,tr=tp!=null&&tc?tp/tc:null;
+h+=line(`พขร. ${g} (${pos==="22W"?"22W + MHC":pos})`,p,"คน",tp)+line(`จำนวนรถ ${g}`,c,"คัน",tc)+line(`Driver Ratio ${g}`,ra,"คน/รถ",tr,3);return{p,tp}};
 h+=sec("COCO · พขร. ตำแหน่ง 22W + MHC");const co=grp("COCO","22W");
 const po=MD.length?mDrv(b,"OIL"):null;
-if(co.tp!=null){const d=co.p-co.tp-(po||0);h+=`<tr><td class="l">ต้องหา พขร. COCO เพิ่ม<br><small style="color:var(--mut)">Actual − Target − Oil</small></td><td colspan="3" class="${d>=0?"good":"bad"}" style="font-size:15px">${d<0?"ต้องหาเพิ่ม "+fmt(-d)+" คน":"ไม่ต้องหาเพิ่ม (เกิน "+fmt(d)+" คน)"}<br><small style="color:var(--mut);font-weight:400">${fmt(co.p)} − ${fmt(co.tp)} − ${fmt(po||0)} = ${fmt(d)}</small></td></tr>`}
-h+=sec("Oil · พขร. ที่มาช่วยวิ่งงาน COCO")+`<tr><td class="l">พขร. Oil</td><td colspan="3">${po==null?"- (ต้องตั้งค่า Master driver)":fmt(po)+" คน"}</td></tr>`;
-$("tCrew").innerHTML=h;}
+if(co.tp!=null){const d=co.p-co.tp-(po||0);h+=`<tr class="callout ${d>=0?"up":"dn"}"><td colspan="4"><div class="co"><b>${d<0?"ต้องหา พขร. COCO เพิ่ม "+fmt(-d)+" คน":"ไม่ต้องหาเพิ่ม (เกิน "+fmt(d)+" คน)"}</b><small>Actual − Target − Oil = ${fmt(co.p)} − ${fmt(co.tp)} − ${fmt(po||0)} = ${fmt(d)}</small></div></td></tr>`}
+h+=sec("Oil · พขร. ที่มาช่วยวิ่งงาน COCO")+`<tr><td class="l">พขร. Oil</td><td><b>${po==null?"-":fmt(po)}</b>${po==null?"":" <small>คน</small>"}</td><td colspan="2" class="l muted">${po==null?"ต้องตั้งค่า Master driver":"มาช่วยวิ่งงาน COCO"}</td></tr>`;
+$("tCrew").innerHTML='<thead><tr><th class="l">รายการ</th><th>จริง</th><th>Target</th><th>Diff</th></tr></thead><tbody>'+h+'</tbody>'}
 function carTable(R,days,dim,b){const m=new Map();R.forEach(r=>{if(!r.car)return;const o=m.get(r.car)||{p:r.car,b:r.branch,g:r.group,km:0,n:0};o.km+=r.km;o.n++;m.set(r.car,o)});
 const L=[...m.values()].map(o=>{const t=o.g==="COCO"?tgt("KM","COCO",o.b):null;return{...o,avg:o.km/days,pr:o.km/days*dim,t}}).sort((a,b)=>b.pr-a.pr);
-$("tCar").innerHTML='<tr><th class="l">ทะเบียน</th><th class="l">กลุ่ม</th><th>เที่ยว</th><th>ยอดสะสม</th><th>เฉลี่ย/วัน</th><th>เป้า/คัน</th><th>ประมาณการสิ้นเดือน</th><th>% ของเป้า</th></tr>'+
-L.map(o=>`<tr><td class="l">${esc(o.p)}</td><td class="l">${o.g}</td><td>${o.n}</td><td>${fmt(o.km)}</td><td>${fmt(o.avg,1)}</td><td>${o.t?fmt(o.t):"-"}</td><td>${fmt(o.pr)}</td><td class="${o.t?(o.pr>=o.t?"good":"bad"):""}">${o.t?fmt(o.pr/o.t*100,1)+"%":"-"}</td></tr>`).join("")+
-`<tr><th class="l">Total</th><th></th><th>${fmt(L.reduce((a,o)=>a+o.n,0))}</th><th>${fmt(L.reduce((a,o)=>a+o.km,0))}</th><th>${fmt(L.reduce((a,o)=>a+o.avg,0),1)}</th><th></th><th>${fmt(L.reduce((a,o)=>a+o.pr,0))}</th><th></th></tr>`}
+const pc=o=>{if(!o.t)return'<span class="muted">-</span>';const p=o.pr/o.t*100,c=stc(p);return`<div class="pcell">${pbar(p,c)}<span class="${c}">${fmt(p,1)}%</span></div>`};
+$("tCar").innerHTML='<thead><tr><th class="l">#</th><th class="l">ทะเบียน</th><th class="l">กลุ่ม</th><th>เที่ยว</th><th>ยอดสะสม</th><th>เฉลี่ย/วัน</th><th>เป้า/คัน</th><th>คาดการณ์สิ้นเดือน</th><th class="l" style="width:22%">% ของเป้า</th></tr></thead><tbody>'+
+L.map((o,i)=>`<tr><td class="l"><span class="rk">${i+1}</span></td><td class="l"><b>${esc(o.p)}</b></td><td class="l"><span class="gpill ${o.g}">${o.g}</span></td><td>${o.n}</td><td>${fmt(o.km)}</td><td>${fmt(o.avg,1)}</td><td>${o.t?fmt(o.t):"-"}</td><td><b>${fmt(o.pr)}</b></td><td class="l">${pc(o)}</td></tr>`).join("")+
+`</tbody><tfoot><tr><th class="l" colspan="3">รวม ${fmt(L.length)} คัน</th><th>${fmt(L.reduce((a,o)=>a+o.n,0))}</th><th>${fmt(L.reduce((a,o)=>a+o.km,0))}</th><th>${fmt(L.reduce((a,o)=>a+o.avg,0),1)}</th><th></th><th>${fmt(L.reduce((a,o)=>a+o.pr,0))}</th><th></th></tr></tfoot>`}
 function costTable(R){const m=new Map();R.forEach(r=>{const o=m.get(r.branch)||{n:0,t:0,h:0,v:0};o.n++;o.t+=r.toll;o.h+=r.hotel;o.v+=r.travel;m.set(r.branch,o)});
 const L=[...m].sort((a,b)=>a[0].localeCompare(b[0],"th")),T=L.reduce((a,[,o])=>({n:a.n+o.n,t:a.t+o.t,h:a.h+o.h,v:a.v+o.v}),{n:0,t:0,h:0,v:0});
-const row=(k,o,tag)=>{const c=o.t+o.h+o.v;return`<tr><${tag} class="l">${k}</${tag}><${tag}>${fmt(o.n)}</${tag}><${tag}>${fmt(o.t)}</${tag}><${tag}>${fmt(o.h)}</${tag}><${tag}>${fmt(o.v)}</${tag}><${tag}>${fmt(c)}</${tag}><${tag}>${fmt(o.n?c/o.n:0,1)}</${tag}></tr>`};
-$("tCost").innerHTML='<tr><th class="l">สาขา</th><th>เที่ยว</th><th>ค่าทางด่วน</th><th>ค่าห้องพัก</th><th>ค่าเดินทาง</th><th>รวม</th><th>เฉลี่ย/เที่ยว</th></tr>'+L.map(([k,o])=>row(esc(k),o,"td")).join("")+(L.length>1?row("รวม",T,"th"):"")}
-function costBars(R){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.cost));
-const e=[...m].sort((a,b)=>a[0]<b[0]?-1:1),W=500,H=230,pb=24,mx=Math.max(1,...e.map(x=>x[1])),bw=W/Math.max(1,e.length);let s="";
-e.forEach(([k,v],i)=>{const h=v/mx*(H-pb-18),x=i*bw+bw*.15;
-s+=`<rect x="${x}" y="${H-pb-h}" width="${bw*.7}" height="${h}" fill="#166534"/>`;if(e.length<=16&&v)s+=`<text x="${x+bw*.35}" y="${H-pb-h-3}" font-size="9" text-anchor="middle">${fmt(v)}</text>`;
-if(e.length<=31||i%3==0)s+=`<text x="${x+bw*.35}" y="${H-8}" font-size="10" text-anchor="middle">${k.slice(8)}</text>`});
-if(!e.length)s='<text x="10" y="30" font-size="12">ไม่มีข้อมูล</text>';
-$("cCost").setAttribute("viewBox",`0 0 ${W} ${H}`);$("cCost").innerHTML=s}
+const stk=o=>{const c=o.t+o.h+o.v;if(!c)return'<span class="muted">-</span>';const w=x=>(x/c*100).toFixed(1)+"%";return`<span class="stk" title="ทางด่วน ${w(o.t)} · ที่พัก ${w(o.h)} · เดินทาง ${w(o.v)}"><i class="c1" style="width:${w(o.t)}"></i><i class="c2" style="width:${w(o.h)}"></i><i class="c3" style="width:${w(o.v)}"></i></span>`};
+const row=(k,o,tag)=>{const c=o.t+o.h+o.v;return`<tr><${tag} class="l">${k}</${tag}><${tag}>${fmt(o.n)}</${tag}><${tag}>${fmt(o.t)}</${tag}><${tag}>${fmt(o.h)}</${tag}><${tag}>${fmt(o.v)}</${tag}><${tag}><b>${fmt(c)}</b></${tag}><${tag} class="l">${stk(o)}</${tag}><${tag}>${fmt(o.n?c/o.n:0,1)}</${tag}></tr>`};
+$("tCost").innerHTML='<thead><tr><th class="l">สาขา</th><th>เที่ยว</th><th><i class="dot c1"></i>ค่าทางด่วน</th><th><i class="dot c2"></i>ค่าที่พัก</th><th><i class="dot c3"></i>ค่าเดินทาง</th><th>รวม</th><th class="l">สัดส่วน</th><th>เฉลี่ย/เที่ยว</th></tr></thead><tbody>'+L.map(([k,o])=>row(esc(k),o,"td")).join("")+'</tbody>'+(L.length>1?'<tfoot>'+row("รวม",T,"th")+'</tfoot>':"")}
 function drvTable(R){const m=new Map();R.forEach(r=>{const k=r.driver||"(ไม่ระบุ)";const o=m.get(k)||{n:k,km:0,t:0};o.km+=r.km;o.t++;m.set(k,o)});
-$("tDrv").innerHTML='<tr><th class="l">พนักงานขับรถ</th><th>เที่ยว</th><th>ระยะทาง</th></tr>'+[...m.values()].sort((a,b)=>b.km-a.km).map(o=>`<tr><td class="l">${esc(o.n)}</td><td>${o.t}</td><td>${fmt(o.km)}</td></tr>`).join("")}
+const L=[...m.values()].sort((a,b)=>b.km-a.km),mx=Math.max(1,...L.map(o=>o.km));
+$("tDrv").innerHTML='<thead><tr><th class="l">#</th><th class="l">พนักงานขับรถ</th><th>เที่ยว</th><th>ระยะทาง (กม.)</th></tr></thead><tbody>'+L.map((o,i)=>`<tr><td class="l"><span class="rk${i<3?" t"+(i+1):""}">${i+1}</span></td><td class="l"><b>${esc(o.n)}</b></td><td>${o.t}</td><td><div class="dbar">${pbar(o.km/mx*100,"up")}<span>${fmt(o.km)}</span></div></td></tr>`).join("")+'</tbody>'}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function get(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return csv(await r.text())}
-async function load(){$("status").textContent="กำลังโหลด...";
+const msg=t=>{const s=$("status");s.textContent=t||"";s.hidden=!t};
+async function load(){msg("กำลังโหลด...");
 try{const fail=[],sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const opt=(g,name)=>g?(async()=>{for(let i=0;i<3;i++){try{return await get(SHEET_BASE+"gid="+g+"&single=true&output=csv")}catch(e){if(i===2){fail.push(name+" ("+e.message+")");return[]}await sleep(800*(i+1))}}})():Promise.resolve([]);
 const [d,t,mc,md]=await Promise.all([get(DATA_URL),get(TARGET_URL),opt(MASTER_CAR_GID,"Master car"),opt(MASTER_DRIVER_GID,"Master driver")]);
@@ -199,6 +392,7 @@ const cs=new Map();rows.forEach(r=>{if(r.date){const c=cycleOf(r.date);cs.set(dk
 const cl=[...cs].sort((a,b)=>a[0]<b[0]?1:-1),cy=$("cycle");
 cy.innerHTML=cl.map(([k,c])=>`<option value="${k}|${dk(c[1])}">รอบ ${dm(c[0])} – ${dm(c[1])} ${c[1].getFullYear()+543}</option>`).join("");
 if(!$("from").value&&cl.length){cy.selectedIndex=0;const[a,b]=cy.value.split("|");$("from").value=a;$("to").value=b}
-render()}catch(e){$("status").textContent="โหลดข้อมูลไม่สำเร็จ: "+e.message}}
+render()}catch(e){msg("โหลดข้อมูลไม่สำเร็จ: "+e.message)}}
 $("cycle").addEventListener("change",()=>{const[a,b]=$("cycle").value.split("|");$("from").value=a;$("to").value=b;render()});["branch","from","to"].forEach(i=>$(i).addEventListener("change",render));$("reload").addEventListener("click",load);load();
-</script></body></html>
+</script><script>/* ล็อกความกว้างหน้าไว้ที่ 1600px แล้วย่อ/ขยายให้พอดีจอ: ทุกจอเห็นการจัดวางเหมือนกัน เลื่อนได้เฉพาะแนวตั้ง */(function(){var W=1600;function fit(){document.body.style.zoom=document.documentElement.clientWidth/W}addEventListener("resize",fit);fit()})();</script>
+</body></html>

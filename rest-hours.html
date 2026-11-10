@@ -1,77 +1,111 @@
 <!DOCTYPE html>
-<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=1600">
 <title>Driver Rest Hours</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--g9:#0f3d24;--g8:#14532d;--g7:#166534;--g1:#e8f0eb;--bg:#f4f6f5;--ink:#14231a;--mut:#5f6f66;--line:#dfe6e2;--red:#b91c1c;--ok:#15803d}
+:root{--g9:#0f3d24;--g8:#14532d;--g7:#166534;--g6:#1f8a4c;--g5:#34b36b;--g2:#cfe6d8;--g1:#e8f0eb;--g0:#f3f8f5;--bg:#e3e9e5;--surface:#f6f8f7;--ink:#14231a;--mut:#64746b;--line:#e2e9e5;--red:#b91c1c;--ok:#15803d;--amb:#ea580c;--sh:0 1px 2px rgba(15,61,36,.05),0 12px 28px -18px rgba(15,61,36,.28)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Sarabun,"Noto Sans Thai",Tahoma,Arial,sans-serif;color:var(--ink);font-size:14px}
-header{background:linear-gradient(135deg,var(--g9),var(--g7));color:#fff;padding:16px 28px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(15,61,36,.25)}
-header h1{margin:0;font-size:21px;font-weight:700;flex:1;letter-spacing:.2px}
-header h1 small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-top:2px}
-.tabs{flex-basis:100%;display:flex;gap:6px;margin:-4px 0 2px}
-.tabs a{color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.12)}
-.tabs a.on{background:#fff;color:var(--g8)}.tabs a:hover:not(.on){background:rgba(255,255,255,.25)}
-input,select,button{font:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
-button{background:#fff;color:var(--g8);border:0;font-weight:700;cursor:pointer}button:hover{background:var(--g1)}button:disabled{opacity:.5;cursor:wait}
-.page{max-width:1440px;margin:auto;padding:22px 24px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-.k{background:#fff;border:1px solid var(--line);border-left:4px solid var(--g7);border-radius:10px;padding:14px 16px;box-shadow:0 1px 2px rgba(15,61,36,.06)}
-.k.bad{border-left-color:var(--red)}.k.bad b{color:var(--red)}
-.k small{display:block;font-size:11.5px;color:var(--mut);font-weight:600}
-.k b{display:block;font-size:26px;margin-top:8px;color:var(--g8);font-variant-numeric:tabular-nums}
-.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:18px;box-shadow:0 1px 2px rgba(15,61,36,.06)}
-.box h2{margin:0 0 14px;font-size:15px;font-weight:700;color:var(--g8);padding-bottom:10px;border-bottom:2px solid var(--g1)}
+body{margin:0;overflow-x:hidden;background:var(--surface);font-family:Sarabun,"Noto Sans Thai",Tahoma,Arial,sans-serif;color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+.shell{width:1600px;background:var(--surface);min-height:100vh}
+.top{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px 16px;padding:22px 32px 20px;background:rgba(246,248,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-radius:0}
+.tabs{display:flex;gap:4px;padding:5px;background:var(--g9);border-radius:999px;box-shadow:0 12px 24px -14px rgba(15,61,36,.8);overflow-x:auto;scrollbar-width:none;max-width:100%}
+.tabs::-webkit-scrollbar{display:none}
+.bar{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;min-width:0}
+.bar .filters{margin:0;gap:12px}
+.bar .filters select,.bar .filters input{min-height:44px}
+.tabs a{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);text-decoration:none;font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+.tabs a:hover:not(.on){color:#fff;background:rgba(255,255,255,.09)}
+.tabs a.on{background:var(--g6);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 6px 14px -6px rgba(52,179,107,.8)}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.page{padding:24px 32px 32px}
+.head{display:flex;align-items:center;gap:16px;min-width:0}.act{justify-self:end;display:flex;gap:10px}
+.head .badge{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--g7);box-shadow:var(--sh);flex:none}
+.head .badge .ico{width:20px;height:20px}
+.head .txt{flex:1;min-width:0}
+.head h1{margin:0;font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.4px}
+.head p{margin:5px 0 0;color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act .primary-btn{min-height:44px;padding:0 22px}
+input,select,button{font:inherit;font-size:13px;color:var(--ink)}
+input,select{min-height:42px;padding:9px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+select{-webkit-appearance:none;appearance:none;padding-right:40px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364746b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;cursor:pointer}
+input:focus,select:focus{border-color:var(--g6);box-shadow:0 0 0 3px rgba(31,138,76,.15)}
+button{cursor:pointer;border:0;border-radius:999px;font-weight:700;padding:9px 16px;background:#fff;color:var(--g8);transition:background .15s,box-shadow .15s}
+button:hover{background:var(--g1)}button:disabled{opacity:.55;cursor:wait}
+.primary-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;background:var(--g6);color:#fff;box-shadow:0 14px 24px -14px rgba(31,138,76,.95)}
+.primary-btn:hover{background:var(--g7)}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+.filters .lbl{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;margin-right:6px}
+.filters .lbl .ico{color:var(--g7)}
+.warn{display:flex;align-items:center;gap:12px;background:#fff;color:var(--mut);border-radius:14px;padding:10px 16px;font-size:12.5px;line-height:1.7;margin-bottom:18px;box-shadow:var(--sh);overflow-wrap:anywhere}
+.warn::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--g5);flex:none;box-shadow:0 0 0 4px rgba(52,179,107,.16)}
+.box{background:#fff;border-radius:22px;padding:20px 22px;margin-bottom:18px;min-width:0;box-shadow:var(--sh)}
+.box h2{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:15px;font-weight:700;color:var(--ink)}
+.box h2::before{content:"";width:6px;height:18px;border-radius:3px;background:var(--g6);flex:none}
+.wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+.wrap::-webkit-scrollbar{width:8px;height:8px}.wrap::-webkit-scrollbar-thumb{background:#cfdbd4;border-radius:8px}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{background:var(--g0);color:var(--mut);font-weight:700;font-size:12px}
+td{border-bottom:1px solid #eef2ef}
+tr:hover td{background:#f1f8f4!important}
+@media(max-width:0px){.shell{margin:0;border-radius:0;min-height:100vh}.top{grid-template-columns:minmax(0,1fr) auto;gap:12px 10px;padding:12px 14px;border-radius:0}.bar .filters{padding-left:0;border-left:0;width:100%}.top .head .badge{display:none}.top>span{display:none}.page{padding:16px 14px 20px}.head h1{font-size:20px}.head p{white-space:normal}.act .primary-btn{min-height:40px;padding:0 14px}.k{min-height:104px}.filters>select,.filters>input{flex:1 1 140px}}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.k{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:20px;padding:16px 18px 18px;min-height:118px;box-shadow:var(--sh)}
+.k small{font-size:12.5px;font-weight:600;color:var(--ink);padding-right:40px;line-height:1.4}
+.k b{margin-top:auto;padding-top:14px;font-size:28px;font-weight:700;letter-spacing:-.6px;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.kic{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--g1);color:var(--g7)}
+.k.bad b{color:var(--red)}.k.bad .kic{background:#fdecec;color:var(--red)}
+.k.hl{background:linear-gradient(150deg,var(--g6) 0%,var(--g8) 70%,var(--g9) 100%);box-shadow:0 18px 30px -18px rgba(20,83,45,.9)}
+.k.hl small,.k.hl b{color:#fff}.k.hl small{opacity:.88}.k.hl .kic{background:rgba(255,255,255,.16);color:#fff}
 .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
-.wrap{overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:8px}
-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:750px}
-th,td{padding:9px 12px;border-bottom:1px solid #edf1ef;text-align:left}
-th{background:var(--g1);color:var(--g8);font-weight:700;font-size:12px;position:sticky;top:0;z-index:1}
-tbody tr:nth-child(even) td{background:#fafcfb}tr:hover td{background:#f0f6f2!important}
+.wrap{max-height:560px}
+table{font-size:13px;min-width:750px}
+th,td{padding:10px 12px;text-align:left}
+th{position:sticky;top:0;z-index:1}
+tbody tr:nth-child(even) td{background:#fbfdfc}
 .pass{color:var(--ok);font-weight:700}.fail{color:var(--red);font-weight:700}
-.warn{background:#fff;color:var(--mut);border:1px solid var(--line);border-left:4px solid var(--g7);padding:9px 14px;border-radius:8px;font-size:12.5px;margin-bottom:16px;line-height:1.8;overflow-wrap:anywhere}
-.mini{padding:4px 10px;font-size:12px;border:1px solid var(--line);margin-right:6px}
+.mini{padding:5px 12px;font-size:12px;border:1px solid var(--line);margin-right:6px;background:#fff}
 .mini.del{color:var(--red);border-color:#f0c9c9}.mini.del:hover{background:#fdecec}
-.tag{display:inline-block;font-size:11px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:999px;padding:2px 8px;margin-right:6px}
-dialog{border:0;border-radius:12px;padding:22px 24px;width:min(420px,92vw);box-shadow:0 12px 40px rgba(15,61,36,.35);font-family:inherit;color:var(--ink)}
-dialog::backdrop{background:rgba(15,35,26,.45)}
-dialog h3{margin:0 0 4px;font-size:16px;color:var(--g8)}
-dialog p{margin:0 0 14px;font-size:12.5px;color:var(--mut)}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:999px;padding:2px 9px;margin-right:6px}
+.outline{border:1px solid var(--line);background:#fff;color:var(--g8);min-height:42px;padding:0 16px}
+.outline:hover{border-color:var(--g6);background:var(--g0)}
+.outline span{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 6px;margin-left:2px;border-radius:999px;background:var(--g9);color:#fff;font-size:11px}
+dialog{border:0;border-radius:24px;padding:24px 26px;width:min(420px,92vw);box-shadow:0 30px 60px -20px rgba(15,61,36,.45);font-family:inherit;color:var(--ink)}
+dialog::backdrop{background:rgba(10,32,19,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+dialog h3{margin:0 0 4px;font-size:18px;color:var(--ink)}
+dialog p{margin:0 0 16px;font-size:12.5px;color:var(--mut);line-height:1.6}
 dialog label{display:block;font-size:12.5px;font-weight:600;color:var(--mut);margin-bottom:12px}
-dialog input{display:block;width:100%;margin-top:5px}
-dialog .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
-dialog button{border:1px solid var(--line);padding:8px 16px}
-dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dialog button.primary:hover{background:var(--g9)}
+dialog input{display:block;width:100%;margin-top:6px}
+dialog .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+dialog button{border:1px solid var(--line);padding:9px 20px}
+dialog button.primary{background:var(--g6);color:#fff;border-color:var(--g6)}dialog button.primary:hover{background:var(--g7)}
 #editErr{min-height:18px;font-size:12.5px;margin-bottom:6px}
-.dt{display:flex;gap:8px}.dt input{width:auto;min-width:0;margin-top:5px}.dt input:first-child{flex:3}.dt input:last-child{flex:2}
-.outline{border:1px solid var(--g7)}
+.dt{display:flex;gap:8px}.dt input{width:auto;min-width:0;margin-top:6px}.dt input:first-child{flex:3}.dt input:last-child{flex:2}
 #listDlg,#delDlg,#ongoDlg{width:min(980px,95vw)}#listDlg .wrap,#delDlg .wrap,#ongoDlg .wrap{max-height:55vh;margin-bottom:12px}
 .wn{color:#b45309;font-weight:700}
 #logDlg{width:min(1100px,96vw)}#logDlg .wrap{max-height:55vh;margin-bottom:12px}#logDlg .controls{margin-bottom:10px;align-items:center}
 #logDlg input{width:230px;margin-top:0}#logDlg td.reason{white-space:normal;min-width:260px}#logInfo{color:var(--mut);font-size:12.5px}
-.box.side{display:grid;grid-template-columns:230px minmax(0,1fr);gap:0 18px;align-items:start}
+@media(max-width:0px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:0px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.k b{font-size:23px}.controls>*{width:100%}}
+.box.side{display:grid;grid-template-columns:240px minmax(0,1fr);gap:0 18px;align-items:start}
 .box.side>h2{grid-column:1/-1}
-.box.side>.controls{flex-direction:column;flex-wrap:nowrap;margin-bottom:0;position:sticky;top:130px}
+.box.side>.controls{flex-direction:column;flex-wrap:nowrap;margin-bottom:0;position:sticky;top:170px}
 .box.side>.controls>*{width:100%}
-.box.side>.controls button{text-align:center}
+.box.side>.controls button{justify-content:center;text-align:center}
 .box.side>.wrap{grid-column:2;min-width:0}
-@media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.page{padding:14px}header{padding:14px}.controls>*{width:100%}
-.box.side{display:block}.box.side>.controls{position:static;flex-direction:row;flex-wrap:wrap;margin-bottom:14px}}
 </style></head><body>
-<header><nav class="tabs"><a href="index.html">ภาพรวม</a><a class="on" href="rest-hours.html">เวลาพัก พขร.</a><a href="driver-app.html">Driver App</a></nav>
-<h1>Driver Rest Hours<small>ตรวจสอบเวลาพักระหว่างงาน (ต้องพักอย่างน้อย 10 ชั่วโมง) และชั่วโมงทำงาน (ต้องไม่เกิน 14 ชั่วโมง)</small></h1>
-<button id="reload" type="button">รีเฟรชข้อมูล</button></header>
+<div class="shell">
+<header class="top"><div class="head"><span class="badge"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><div class="txt"><h1>Driver Rest Hours</h1><p>ตรวจสอบเวลาพักระหว่างงาน (ต้องพักอย่างน้อย 10 ชั่วโมง) และชั่วโมงทำงาน (ต้องไม่เกิน 14 ชั่วโมง)</p></div></div>
+<div class="bar"><nav class="tabs"><a href="index.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>ภาพรวม</a><a class="on" aria-current="page" href="rest-hours.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>เวลาพัก พขร.</a><a href="driver-app.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>Driver App</a></nav></div><div class="act"><button id="reload" type="button" class="primary-btn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>รีเฟรชข้อมูล</button></div></header>
 <div class="page">
 <div id="message" class="warn" role="status">กำลังโหลดข้อมูลจาก Google Sheets...</div>
 <div class="cards">
-<div class="k"><small>พขร.ทั้งหมด</small><b id="drivers">0</b></div>
-<div class="k"><small>รอบพักไม่ผ่าน (&lt;10 ชม.)</small><b id="failed">0</b></div>
-<div class="k"><small>อัตราผ่าน</small><b id="rate">0%</b></div>
-<div class="k"><small>งานทั้งหมด</small><b id="jobs">0</b></div>
-<div class="k"><small>ชม.ทำงานทั้งหมด</small><b id="totalWork">-</b></div>
-<div class="k"><small>ชม.ทำงานเฉลี่ย</small><b id="avgWork">-</b></div>
-<div class="k"><small>ชม.พักเฉลี่ย</small><b id="avgRest">-</b></div>
-<div class="k bad"><small>งานทำเกิน 14 ชม.</small><b id="over">0</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><small>พขร.ทั้งหมด</small><b id="drivers">0</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span><small>รอบพักไม่ผ่าน (&lt;10 ชม.)</small><b id="failed">0</b></div>
+<div class="k hl"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span><small>อัตราผ่าน</small><b id="rate">0%</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><small>งานทั้งหมด</small><b id="jobs">0</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 22h14M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/></svg></span><small>ชม.ทำงานทั้งหมด</small><b id="totalWork">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><small>ชม.ทำงานเฉลี่ย</small><b id="avgWork">-</b></div>
+<div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><small>ชม.พักเฉลี่ย</small><b id="avgRest">-</b></div>
+<div class="k bad"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></svg></span><small>งานทำเกิน 14 ชม.</small><b id="over">0</b></div>
 </div>
 <div class="box side"><h2>ชั่วโมงทำงานและเวลาพักระหว่างงาน</h2>
 <div class="controls"><input id="search" list="dlSearch" placeholder="ค้นหาหรือเลือกชื่อ พขร." autocomplete="off"><datalist id="dlSearch"></datalist>
@@ -79,10 +113,10 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <select id="workStatus"><option value="all">ชั่วโมงทำงาน: ทั้งหมด</option><option value="over">เกิน 14 ชม.</option><option value="ok">ไม่เกิน 14 ชม.</option></select>
 <select id="status"><option value="all">เวลาพัก: ทั้งหมด</option><option value="ผ่าน">พักผ่าน</option><option value="ไม่ผ่าน">พักไม่ผ่าน</option></select>
 <select id="sortWork"><option value="default">เรียงลำดับ: ตามชื่อ/เวลา</option><option value="desc">ชั่วโมงทำงาน มาก → น้อย</option><option value="asc">ชั่วโมงทำงาน น้อย → มาก</option></select>
-<button type="button" id="viewOngoing" class="outline">งานที่ยังไม่จบ (<span id="ongoingCount">0</span>)</button>
-<button type="button" id="viewEdited" class="outline">ดูรายการที่แก้ไข (<span id="editedCount">0</span>)</button>
-<button type="button" id="viewDeleted" class="outline">ดูรายการที่ลบ (<span id="delCount">0</span>)</button>
-<button type="button" id="viewLog" class="outline">ต้องตรวจสอบ (<span id="logCount">0</span>)</button>
+<button type="button" id="viewOngoing" class="outline">งานที่ยังไม่จบ <span id="ongoingCount">0</span></button>
+<button type="button" id="viewEdited" class="outline">ดูรายการที่แก้ไข <span id="editedCount">0</span></button>
+<button type="button" id="viewDeleted" class="outline">ดูรายการที่ลบ <span id="delCount">0</span></button>
+<button type="button" id="viewLog" class="outline">ต้องตรวจสอบ <span id="logCount">0</span></button>
 <button type="button" id="addRec" class="outline">+ เพิ่มเวลาเข้า-ออกงาน</button>
 <select id="exportMonth" title="เลือกเดือนที่จะ Export"></select>
 <button type="button" id="exportXlsx" class="outline">Export Excel</button></div>
@@ -124,6 +158,7 @@ dialog button.primary{background:var(--g8);color:#fff;border-color:var(--g8)}dia
 <div class="wrap"><table><thead><tr><th>แถวในชีต</th><th>พขร.</th><th>Date (ค่าเดิม)</th><th>เวลาเริ่ม (ค่าเดิม)</th><th>เวลาจบ (ค่าเดิม)</th><th>สาเหตุ</th><th>จัดการ</th></tr></thead>
 <tbody id="logRows"></tbody></table></div>
 <div class="actions"><button type="button" id="logClose">ปิด</button></div></dialog>
+</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -506,4 +541,5 @@ if(btn)btn.disabled=false;
 records.push({driver,branch,start:s,end:en,source:"เพิ่มเอง",rowNumber:0,added:true,key,origStart:s,origEnd:en});
 computeRest();updateBranches();updateMonths();render();document.getElementById("addDlg").close()});
 loadData();
-</script></body></html>
+</script><script>/* ล็อกความกว้างหน้าไว้ที่ 1600px แล้วย่อ/ขยายให้พอดีจอ: ทุกจอเห็นการจัดวางเหมือนกัน เลื่อนได้เฉพาะแนวตั้ง */(function(){var W=1600;function fit(){document.body.style.zoom=document.documentElement.clientWidth/W}addEventListener("resize",fit);fit()})();</script>
+</body></html>
