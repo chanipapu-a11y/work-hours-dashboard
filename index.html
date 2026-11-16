@@ -248,6 +248,9 @@ const displayDate=v=>{const d=pdate(v);return d?`${String(d.getDate()).padStart(
 function syncDateFilters(){["from","to"].forEach(id=>$(id+"Display").textContent=displayDate($(id).value));$("from").max=$("to").value;$("to").min=$("from").value;const key=$("from").value+"|"+$("to").value;$("cycle").value=[...$("cycle").options].some(o=>o.value===key)?key:"custom"}
 function dateKeys(){const keys=sel().map(r=>r.k).sort(),start=pdate($("from").value||keys[0]),end=pdate($("to").value||keys[keys.length-1]),out=[];if(!start||!end)return out;for(const d=new Date(start);d<=end;d.setDate(d.getDate()+1))out.push(dk(d));return out}
 const dailySeries=(m,value=x=>x)=>dateKeys().map(k=>[k,m.has(k)?value(m.get(k)):null]);
+function valueAxis(peak){const top=Math.max(1,peak)*1.05,p=Math.pow(10,Math.floor(Math.log10(top/4)));
+const scales=[.1,.15,.2,.25,.5,1,1.5,2,2.5,5,10].map(v=>{const step=v*p,count=Math.ceil(top/step-1e-10);return{step,count,max:Number((step*count).toPrecision(12))}}).filter(s=>s.count>=3&&s.count<=6);
+return scales.sort((a,b)=>a.max-b.max||Math.abs(a.count-4)-Math.abs(b.count-4))[0]}
 const missingDay=k=>k>dk(new Date())?"ยังไม่ถึงวันที่":"ไม่มีรายการในต้นทาง";
 const nm=v=>tx(v).replace(/^(นางสาว|น\.ส\.|นาย|นาง)\s*/,"").replace(/\s+/g," "),pl=v=>tx(v).replace(/\s+/g,"").toUpperCase();
 const cv=(r,ns,i)=>{for(const n of ns)if(r[n]!==undefined)return num(r[n]);return num(Object.values(r)[i])};
@@ -283,12 +286,11 @@ chart(RC,kmT/dim,{avg:km/days,proj,kmT,cars,tCars,dim,cH,cN,cM,aH,aN,aM,aKm,aT})
 function chart(R,tline,S){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.km));
 const e=dailySeries(m),n=e.length,recorded=e.filter(([,v])=>v!==null).length,T=tline>0?tline:0,avg=S.avg||0;
 const W=1000,H=210,pl=40,pr=0,pt=20,pb=T?46:28,cw=W-pl-pr,chh=H-pt-pb,base=pt+chh;
-const nice=v=>{const p=Math.pow(10,Math.floor(Math.log10(v/4))),st=[1,1.5,2,2.5,3,4,5,6,8,10].map(x=>x*p).find(x=>x*4>=v);return st*4};
-const mx=nice(Math.max(1,T,...e.map(x=>x[1]))*1.05),Y=v=>base-v/mx*chh;
+const axis=valueAxis(Math.max(T,...e.map(x=>x[1]))),mx=axis.max,Y=v=>base-v/mx*chh;
 const k1=v=>v>=1e3?fmt(v/1e3,1)+"k":fmt(v),pc=(a,t)=>(a-t)/t*100;
 const rr=(x,y,w,h,r)=>`M${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h-r}Q${x+w},${y+h} ${x+w-r},${y+h}H${x+r}Q${x},${y+h} ${x},${y+h-r}V${y+r}Q${x},${y} ${x+r},${y}Z`;
 let s='<g class="grid">',lb="";
-for(let i=0;i<=4;i++){const v=mx*i/4,y=Y(v);s+=`<text x="${pl-8}" y="${y+3.5}" text-anchor="end">${i?k1(v):"0"}</text>`}
+for(let i=0;i<=axis.count;i++){const v=axis.step*i,y=Y(v);s+=`<text x="${pl-8}" y="${y+3.5}" text-anchor="end">${i?k1(v):"0"}</text>`}
 s+="</g>";
 if(T)s+=`<line class="sep" x1="${pl}" x2="${W-pr}" y1="${base+22}" y2="${base+22}"/>`;
 const bw=cw/Math.max(1,n),w=Math.min(30,bw*.52),dense=n>14;let hit=0,prevM="";
@@ -340,10 +342,9 @@ const mDrv=(b,pos)=>{const to=$("to").value;return uniq(MD.filter(x=>(!b||x.bran
 function costBars(R){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.cost));
 const e=dailySeries(m),n=e.length;
 const W=600,H=240,pl=30,pr=0,pt=22,pb=40,cw=W-pl-pr,chh=H-pt-pb,base=pt+chh;
-const nice=v=>{const p=Math.pow(10,Math.floor(Math.log10(v/4))),st=[1,1.5,2,2.5,3,4,5,6,8,10].map(x=>x*p).find(x=>x*4>=v);return st*4};
-const mx=nice(Math.max(1,...e.map(x=>x[1]))*1.08),Y=v=>base-v/mx*chh,k1=v=>v>=1e3?fmt(v/1e3,1)+"k":fmt(v);
+const axis=valueAxis(Math.max(0,...e.map(x=>x[1]))),mx=axis.max,Y=v=>base-v/mx*chh,k1=v=>v>=1e3?fmt(v/1e3,1)+"k":fmt(v);
 let s='<g class="grid">',lb="";
-for(let i=0;i<=4;i++){const v=mx*i/4,y=Y(v);s+=`<text x="${pl-7}" y="${y+3.5}" text-anchor="end">${i?k1(v):"0"}</text>`}
+for(let i=0;i<=axis.count;i++){const v=axis.step*i,y=Y(v);s+=`<text x="${pl-7}" y="${y+3.5}" text-anchor="end">${i?k1(v):"0"}</text>`}
 s+="</g>";
 const bw=cw/Math.max(1,n),w=Math.min(24,bw*.55);let prevM="";
 e.forEach(([k,v],i)=>{const x=pl+i*bw+(bw-w)/2,cx=x+w/2,d=pdate(k),mo=d.toLocaleDateString("th-TH",{month:"short"});
