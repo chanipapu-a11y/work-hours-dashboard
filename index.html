@@ -243,6 +243,8 @@ return out.filter(r=>r.some(v=>tx(v))).map(r=>{const o={};h.forEach((k,i)=>{if(!
 function pdate(v){const s=tx(v);if(!s)return null;let y,mo,day,m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|[T\s])/);
 if(m){y=+m[1];mo=+m[2];day=+m[3]}else{m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(!m)return null;y=+m[3];mo=+m[2];day=+m[1]}
 if(y<100)y+=2000;if(y>2400)y-=543;const d=new Date(y,mo-1,day);return d.getFullYear()===y&&d.getMonth()===mo-1&&d.getDate()===day?d:null}
+// ปีลาออกแบบย่อ 40–99 เป็น พ.ศ. 2540–2599 เช่น 14/11/69 = 14/11/2569
+const leaveDate=v=>pdate(tx(v).replace(/^(\d{1,2}[\/.-]\d{1,2}[\/.-])([4-9]\d)$/,(_,prefix,year)=>prefix+(2500+Number(year))));
 const dk=d=>d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`:"";
 const displayDate=v=>{const d=pdate(v);return d?`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()+543}`:"วว/ดด/ปปปป"};
 function syncDateFilters(){["from","to"].forEach(id=>$(id+"Display").textContent=displayDate($(id).value));$("from").max=$("to").value;$("to").min=$("from").value;const key=$("from").value+"|"+$("to").value;$("cycle").value=[...$("cycle").options].some(o=>o.value===key)?key:"custom"}
@@ -338,7 +340,7 @@ lb+=`<text class="vl" x="${cx}" y="${yt-5}" text-anchor="middle">${v}</text>`});
 if(T){const y=Y(T);s=s.replace("</g>",`</g><line class="tl" x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/>`);}
 {const lt=$(id).closest(".box").querySelector(".legend .lt");if(lt)lt.parentNode.lastChild.textContent=T?"Target "+fmt(T,1):"Target: ไม่มีข้อมูล"}$(id).setAttribute("viewBox",`0 0 ${W} ${H}`);$(id).innerHTML=n?s+lb:`<text class="xl" x="${W/2}" y="${H/2}" text-anchor="middle">ไม่มีข้อมูล LOCO ในช่วงนี้</text>`}
 const mCars=b=>uniq(MC.filter(x=>!b||x.branch===b).map(x=>x.plate));
-const mDrv=(b,pos)=>{const to=$("to").value;return uniq(MD.filter(x=>(!b||x.branch===b)&&(!pos||(pos==="OIL"?x.pos.trim().toUpperCase()==="OIL":(pos==="22W"?/^(22W|MHC)$/:new RegExp("^"+pos+"$")).test(x.pos.replace(/\s/g,"").toUpperCase())))&&!(x.leave&&to&&dk(x.leave)<=to)).map(x=>x.name))};
+const mDrv=(b,pos)=>{const to=$("to").value;return uniq(MD.filter(x=>(!b||x.branch===b)&&(!pos||(pos==="OIL"?x.pos.trim().toUpperCase()==="OIL":(pos==="22W"?/^(22W(?:\(NEW\))?|MHC)$/:new RegExp("^"+pos+"$")).test(x.pos.replace(/\s/g,"").toUpperCase())))&&!(x.leave&&to&&dk(x.leave)<=to)).map(x=>x.name))};
 function costBars(R){const m=new Map();R.forEach(r=>m.set(r.k,(m.get(r.k)||0)+r.cost));
 const e=dailySeries(m),n=e.length;
 const W=600,H=240,pl=30,pr=0,pt=22,pb=40,cw=W-pl-pr,chh=H-pt-pb,base=pt+chh;
@@ -374,8 +376,8 @@ const act=(g,pos)=>{const G=R.filter(r=>r.group===g&&(g!=="LOCO"||r.car));let c=
 const line=(lab,a,u,t,d=0)=>`<tr><td class="l">${lab}</td><td><b>${a==null?"No data":fmt(a,d)}</b>${u&&a!=null?` <small>${u}</small>`:""}</td><td>${t==null?"No data":fmt(t,d)}</td><td>${a==null?'<span class="dchip mut">-</span>':chipD(a,t,d)}</td></tr>`;
 let h="";
 const grp=(g,pos)=>{const[c,p]=act(g,pos),tp=tgt("PERSON",g,b),tc=tgt("CAR",g,b),ra=c?p/c:null,tr=tp!=null&&tc?tp/tc:null;
-h+=line(`พขร. ${g} (${pos==="22W"?"22W + MHC":pos})`,p,"คน",tp)+line(`จำนวนรถ ${g}`,c,"คัน",tc)+line(`Driver Ratio ${g}`,ra,"คน/รถ",tr,3);return{p,tp}};
-h+=sec("COCO · พขร. ตำแหน่ง 22W + MHC");const co=grp("COCO","22W");
+h+=line(`พขร. ${g} (${pos==="22W"?"22W + 22W(NEW) + MHC":pos})`,p,"คน",tp)+line(`จำนวนรถ ${g}`,c,"คัน",tc)+line(`Driver Ratio ${g}`,ra,"คน/รถ",tr,3);return{p,tp}};
+h+=sec("COCO · พขร. ตำแหน่ง 22W + 22W(NEW) + MHC");const co=grp("COCO","22W");
 const po=MD.length?mDrv(b,"OIL"):null;
 if(co.tp!=null){const d=co.p-co.tp-(po||0);h+=`<tr class="callout ${d>=0?"up":"dn"}"><td colspan="4"><div class="co"><b>${d<0?"ต้องหา พขร. COCO เพิ่ม "+fmt(-d)+" คน":"ไม่ต้องหาเพิ่ม (เกิน "+fmt(d)+" คน)"}</b><small>Actual − Target − Oil = ${fmt(co.p)} − ${fmt(co.tp)} − ${fmt(po||0)} = ${fmt(d)}</small></div></td></tr>`}
 h+=sec("Oil · พขร. ที่มาช่วยวิ่งงาน COCO")+`<tr><td class="l">พขร. Oil</td><td><b>${po==null?"-":fmt(po)}</b>${po==null?"":" <small>คน</small>"}</td><td colspan="2" class="l muted">${po==null?"ต้องตั้งค่า Master driver":"มาช่วยวิ่งงาน COCO"}</td></tr>`;
@@ -402,7 +404,7 @@ try{const fail=[],sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const opt=(g,name)=>g?(async()=>{for(let i=0;i<3;i++){try{return await get(SHEET_BASE+"gid="+g+"&single=true&output=csv")}catch(e){if(i===2){fail.push(name+" ("+e.message+")");return[]}await sleep(800*(i+1))}}})():Promise.resolve([]);
 const [d,t,mc,md]=await Promise.all([get(DATA_URL),get(TARGET_URL),opt(MASTER_CAR_GID,"Master car"),opt(MASTER_DRIVER_GID,"Master driver")]);
 MC=mc.map(r=>({branch:tx(r["สาขา"]),plate:pl(r["ทะเบียน"])||pl(r["เบอร์รถ"]),type:tx(r["ประเภทรถ"])})).filter(x=>x.plate&&!/pick\s*up/i.test(x.branch+" "+x.type));
-MD=md.map(r=>({branch:tx(r["สาขา"]),name:nm(r["ชื่อ พขร."]),pos:tx(r["ตำแหน่ง"])||tx(Object.values(r)[3]),leave:pdate(r["วันที่ลาออก"])})).filter(x=>x.name);
+MD=md.map(r=>({branch:tx(r["สาขา"]),name:nm(r["ชื่อ พขร."]),pos:tx(r["ตำแหน่ง"])||tx(Object.values(r)[3]),leave:leaveDate(tx(r["วันที่ลาออก"])||r["ลาออก"])})).filter(x=>x.name);
 const w=[...fail];if(MASTER_DRIVER_GID&&!MD.length&&!w.some(x=>x.startsWith("Master driver")))w.push("Master driver ไม่มีข้อมูล");if(MASTER_CAR_GID&&!MC.length&&!w.some(x=>x.startsWith("Master car")))w.push("Master car ไม่มีข้อมูล");
 masterWarn=w.length?"⚠ โหลดไม่สำเร็จ: "+w.join(", "):"";
 const all=d.map(norm);bad=all.filter(r=>r.km<0||r.km>MAX_TRIP_KM).length;rows=all.filter(r=>r.km>=0&&r.km<=MAX_TRIP_KM);
