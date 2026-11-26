@@ -68,6 +68,11 @@ tr:hover td{background:#f1f8f4!important}
 .box.dark{background:radial-gradient(130% 170% at 0% 0%,#34905c 0%,#23703f 45%,#1b5c35 100%);color:#fff;box-shadow:0 24px 40px -24px rgba(20,83,45,.75)}
 .box.dark h2{color:#fff}.box.dark h2::before{background:#5fe08f}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-bottom:18px}.grid2>.box{margin-bottom:0}
+.crew-box{align-self:start}.crew-scope{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;font-size:14px;color:var(--mut)}.crew-scope strong{color:var(--ink)}.crew-tag{padding:4px 10px;border-radius:999px;background:var(--g1);color:var(--g8);font-size:13px;white-space:nowrap}
+.crew-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:10px}.crew-metric{padding:14px;border:1px solid var(--line);border-radius:14px;background:#f8faf9}.crew-metric small{display:block;font-size:14px;line-height:1.5;color:var(--mut)}.crew-metric b{display:block;margin-top:6px;font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums}.crew-metric b span{margin-left:5px;font-size:14px;font-weight:400}.crew-metric.primary{background:var(--g9);border-color:var(--g9);color:#fff}.crew-metric.primary small{color:#d4eadc}.crew-metric.under{background:#fff5f5;border-color:#fecaca;color:var(--red)}.crew-metric.over{background:var(--g0);border-color:#cfe6d8;color:var(--ok)}
+.crew-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0}.crew-breakdown>span{font-size:14px;color:var(--mut)}.crew-role{display:inline-flex;gap:10px;align-items:center;padding:7px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}.crew-role b{color:var(--g8)}.crew-note{margin:10px 0 14px;color:var(--mut);font-size:13px;line-height:1.7}.crew-comparison{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:11px 13px;margin-bottom:16px;border-left:3px solid var(--line);border-radius:0 9px 9px 0;background:#f8faf9;font-size:14px}.crew-comparison.under{border-color:#ef4444;background:#fff5f5;color:var(--red)}.crew-comparison.over{border-color:var(--g6);background:var(--g0);color:var(--ok)}.crew-comparison small{font-size:13px;color:var(--mut)}
+.crew-vehicle{max-height:none}.crew-vehicle table{width:100%;font-size:14px}.crew-vehicle thead th{font-size:13px}.oil-panel{margin-top:18px;padding:16px;border:1px solid #d5e4ed;border-radius:14px;background:#f5f9fc}.oil-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.oil-head h3{margin:0;color:#24506a;font-size:16px}.oil-head>span{font-size:13px;color:#527080}.oil-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.oil-metric{padding:12px;background:#fff;border:1px solid #dce8ef;border-radius:10px}.oil-metric small{display:block;font-size:14px;color:#527080}.oil-metric b{display:block;margin-top:5px;font-size:26px;line-height:1.3;color:#24506a}.oil-metric b span{margin-left:5px;font-size:14px;font-weight:400}.oil-panel p{margin:10px 0 0;font-size:13px;line-height:1.7;color:#527080}
+.workforce-layout{align-items:start}.workforce-side{display:grid;gap:18px}.workforce-side>.box{margin-bottom:0}.workforce-side .oil-panel{margin-top:0;padding:20px 22px}
 .box h2.sp{margin-top:22px}
 .wrap{max-height:440px}
 table{font-size:13px}
@@ -202,9 +207,9 @@ tr.callout.dn .co{background:#fef2f2;border:1px solid #fecaca}tr.callout.up .co{
 <div class="k"><span class="kic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></span><small>ค่าใช้จ่ายรวม : บาท</small><b id="kCost">-</b></div>
 </div>
 <div class="box kmbox"><div class="chead"><h2>ระยะทางวิ่งงานประจำวัน COCO : กิโลเมตร</h2><div class="legend"><span><i class="lu"></i>ระยะทาง/วัน</span><span><i class="lt"></i>เป้า/วัน</span><span>— ไม่มีรายการในต้นทาง</span></div></div><p id="dataCoverage" class="coverage" role="status"></p><div class="kstats" id="chartStats"></div><div class="chwrap"><svg id="chart" class="ch2" data-unit="กม."></svg></div></div>
-<div class="grid2">
-<div class="box"><h2>อัตรากำลังคนและรถขนส่ง เทียบ Target</h2><div class="wrap"><table id="tCrew"></table></div></div>
-<div class="box"><h2>LOCO แยกสาขา</h2><div class="wrap"><table id="tLoco"></table></div></div>
+<div class="grid2 workforce-layout">
+<div class="box crew-box"><h2>กำลังคนและรถ COCO เทียบ Target</h2><div id="crewSummary"></div><div class="wrap crew-vehicle"><table id="tCrew"></table></div></div>
+<div class="workforce-side"><div class="box"><h2>LOCO แยกสาขา</h2><div class="wrap"><table id="tLoco"></table></div></div><div id="oilSummary"></div></div>
 </div>
 <div class="grid2">
 <div class="box kmbox"><div class="chead"><h2>จำนวนรถต่อวัน (LOCO) เทียบ Target</h2><div class="legend"><span><i class="lu"></i>จำนวนรถ</span><span><i class="lt"></i>Target</span></div></div><svg id="cLocoCar" class="ch2" data-unit="คัน"></svg></div>
@@ -271,7 +276,7 @@ function cycleOf(d){const st=d.getDate()>=26?new Date(d.getFullYear(),d.getMonth
 const dm=d=>d.toLocaleDateString("th-TH",{day:"numeric",month:"short"});
 const uniq=a=>new Set(a.filter(Boolean)).size;
 function render(){syncDateFilters();const R=sel(),b=$("branch").value;$("hBranch").textContent=b?"สาขา"+b:"ทุกสาขา";$("hBranch").classList.toggle("on",!!b);
-const f=$("from").value,t=$("to").value;if(!R.length){document.querySelectorAll(".cards b").forEach(el=>el.textContent="–");["chartStats","chart","cLocoCar","cLocoPer","tCrew","tLoco","tCar","tDrv","tCost","cCost"].forEach(id=>$(id).innerHTML="");$("dataCoverage").textContent="ไม่มีรายการในช่วงวันที่ที่เลือก";msg(f&&t&&f>t?"วันที่เริ่มต้นต้องไม่เกินวันที่สิ้นสุด":"ไม่พบข้อมูลในช่วงที่เลือก");return}
+const f=$("from").value,t=$("to").value;if(!R.length){document.querySelectorAll(".cards b").forEach(el=>el.textContent="–");["chartStats","chart","cLocoCar","cLocoPer","crewSummary","oilSummary","tCrew","tLoco","tCar","tDrv","tCost","cCost"].forEach(id=>$(id).innerHTML="");$("tCrew").closest(".wrap").hidden=true;$("dataCoverage").textContent="ไม่มีรายการในช่วงวันที่ที่เลือก";msg(f&&t&&f>t?"วันที่เริ่มต้นต้องไม่เกินวันที่สิ้นสุด":"ไม่พบข้อมูลในช่วงที่เลือก");return}
 const ds=R.map(r=>r.k).sort(),first=pdate(f||ds[0]),last=pdate(ds[ds.length-1]);
 const days=Math.max(1,Math.round((last-first)/864e5)+1),cyc=cycleOf(last),dim=Math.round((cyc[1]-cyc[0])/864e5)+1;
 const RC=R.filter(r=>r.group==="COCO");
@@ -371,17 +376,19 @@ p=(/^ระยอง/.test(br)&&MD.length)?mDrv(br,"10W"):uniq(G.flatMap(r=>[r.d
 P+=p;C+=c;if(tp!=null){TP+=tp;kp=true}if(tc!=null){TC+=tc;kc=true}h+=row(esc(br),p,tp,c,tc,"td")});
 $("tLoco").innerHTML='<thead><tr><th class="l">สาขา</th><th class="gs">พขร.</th><th>Target</th><th>Diff</th><th class="gs">รถ</th><th>Target</th><th>Diff</th><th class="gs">Ratio</th></tr></thead><tbody>'+
 (h||'<tr><td colspan="8" class="l muted">ไม่มีข้อมูล LOCO</td></tr>')+'</tbody>'+(bs.length>1?'<tfoot>'+row("รวม",P,kp?TP:null,C,kc?TC:null,"th")+'</tfoot>':"")}
-function crew(R,b){const sec=t=>`<tr class="sec"><td colspan="4">${t}</td></tr>`;
-const act=(g,pos)=>{const G=R.filter(r=>r.group===g&&(g!=="LOCO"||r.car));let c=uniq(G.map(r=>r.car)),p=uniq(G.flatMap(r=>[r.driver,r.driver2]));if(g==="COCO"&&MC.length)c=mCars(b);if(MD.length)p=mDrv(b,pos);return[c,p]};
-const line=(lab,a,u,t,d=0)=>`<tr><td class="l">${lab}</td><td><b>${a==null?"No data":fmt(a,d)}</b>${u&&a!=null?` <small>${u}</small>`:""}</td><td>${t==null?"No data":fmt(t,d)}</td><td>${a==null?'<span class="dchip mut">-</span>':chipD(a,t,d)}</td></tr>`;
-let h="";
-const grp=(g,pos)=>{const[c,p]=act(g,pos),tp=tgt("PERSON",g,b),tc=tgt("CAR",g,b),ra=c?p/c:null,tr=tp!=null&&tc?tp/tc:null;
-h+=line(`พขร. ${g} (${pos==="22W"?"22W + 22W(NEW) + MHC":pos})`,p,"คน",tp)+line(`จำนวนรถ ${g}`,c,"คัน",tc)+line(`Driver Ratio ${g}`,ra,"คน/รถ",tr,3);return{p,tp}};
-h+=sec("COCO · พขร. ตำแหน่ง 22W + 22W(NEW) + MHC");const co=grp("COCO","22W");
-const po=MD.length?mDrv(b,"OIL"):null;
-if(co.tp!=null){const d=co.p-co.tp-(po||0);h+=`<tr class="callout ${d>=0?"up":"dn"}"><td colspan="4"><div class="co"><b>${d<0?"ต้องหา พขร. COCO เพิ่ม "+fmt(-d)+" คน":"ไม่ต้องหาเพิ่ม (เกิน "+fmt(d)+" คน)"}</b><small>Actual − Target − Oil = ${fmt(co.p)} − ${fmt(co.tp)} − ${fmt(po||0)} = ${fmt(d)}</small></div></td></tr>`}
-h+=sec("Oil · พขร. ที่มาช่วยวิ่งงาน COCO")+`<tr><td class="l">พขร. Oil</td><td><b>${po==null?"-":fmt(po)}</b>${po==null?"":" <small>คน</small>"}</td><td colspan="2" class="l muted">${po==null?"ต้องตั้งค่า Master driver":"มาช่วยวิ่งงาน COCO"}</td></tr>`;
-$("tCrew").innerHTML='<thead><tr><th class="l">รายการ</th><th>จริง</th><th>Target</th><th>Diff</th></tr></thead><tbody>'+h+'</tbody>'}
+function crew(R,b){const to=$("to").value,pos=d=>d.pos.replace(/\s/g,"").toUpperCase();
+const active=MD.filter(d=>(!b||d.branch===b)&&!(d.leave&&to&&dk(d.leave)<=to)),roles=["22W","22W(NEW)","MHC"];
+const roster=active.filter(d=>roles.includes(pos(d))),p=MD.length?uniq(roster.map(d=>d.name)):null;
+const parts=roles.map(role=>({role,n:uniq(roster.filter(d=>pos(d)===role).map(d=>d.name))})).filter(d=>d.n>0);
+const tp=tgt("PERSON","COCO",b),tc=tgt("CAR","COCO",b),c=MC.length?mCars(b):uniq(R.filter(r=>r.group==="COCO").map(r=>r.car)),diff=p!=null&&tp!=null?p-tp:null,cls=diff==null?"":diff<0?"under":"over";
+const number=(n,d=0)=>n==null?"—":fmt(n,d),metric=(label,value,key,style="",signed=false)=>`<div class="crew-metric ${style}"><small>${label}</small><b data-metric="${key}" data-value="${value??""}">${signed&&value>0?"+":""}${value!=null&&value<0?"−"+fmt(-value):number(value)}<span>คน</span></b></div>`;
+$("crewSummary").innerHTML=`<div class="crew-scope"><strong>${esc(b||"ทุกสาขา")} · กำลังคนตาม Master</strong><span class="crew-tag">แยกจาก OIL</span></div><div class="crew-grid">${metric("พขร. COCO รวม",p,"coco-total","primary")}${metric("Target COCO",tp,"coco-target")}${metric("ส่วนต่างจาก Target",diff,"coco-difference",cls,true)}</div><div class="crew-breakdown"><span>ประกอบด้วย</span>${parts.map(d=>`<span class="crew-role" data-position="${d.role}" data-count="${d.n}">${d.role==="MHC"?"มหาชัย (MHC)":d.role}<b>${fmt(d.n)} คน</b></span>`).join("")||`<span>${MD.length?"ไม่มีรายชื่อ COCO ในสาขานี้":"ยังไม่มีข้อมูล Master driver"}</span>`}</div><p class="crew-note">นับชื่อไม่ซ้ำ${to?` ณ ${displayDate(to)}`:""} · ตัดผู้ที่ลาออกแล้วตามวันที่สิ้นสุดที่เลือก</p><div class="crew-comparison ${cls}" data-metric="coco-comparison"><strong>${diff==null?"ยังไม่สามารถเทียบ Target ได้":diff<0?`ต่ำกว่า Target ${fmt(-diff)} คน`:diff>0?`เกิน Target ${fmt(diff)} คน`:"ครบตาม Target"}</strong><small>${diff==null?"ตรวจสอบข้อมูล Master และ Target":`COCO ${fmt(p)} − Target ${fmt(tp)} = ${diff<0?"−":""}${fmt(Math.abs(diff))} คน`}</small></div>`;
+const line=(label,a,u,t,d=0)=>`<tr><td class="l">${label}</td><td><b>${number(a,d)}</b>${a==null?"":` <small>${u}</small>`}</td><td>${number(t,d)}</td><td>${a==null?"—":chipD(a,t,d)}</td></tr>`;
+$("tCrew").closest(".wrap").hidden=false;
+$("tCrew").innerHTML='<thead><tr><th class="l">รถและอัตรากำลัง</th><th>จำนวน</th><th>Target</th><th>ส่วนต่าง</th></tr></thead><tbody>'+line("จำนวนรถ COCO",c,"คัน",tc)+line("พขร. COCO ต่อรถ",p!=null&&c?p/c:null,"คน/คัน",tp!=null&&tc?tp/tc:null,3)+'</tbody>';
+const oilMaster=MD.length?uniq(active.filter(d=>pos(d)==="OIL").map(d=>d.name)):null;
+const oilRoster=MD.filter(d=>pos(d)==="OIL"),oilActual=MD.length?uniq(R.filter(r=>r.group==="COCO"&&r.km>0).flatMap(r=>[r.driver,r.driver2].filter(name=>name&&oilRoster.some(d=>d.name===name&&(!d.leave||r.k<dk(d.leave)))))):null;
+$("oilSummary").innerHTML=oilMaster>0||oilActual>0?`<section class="oil-panel" aria-label="กำลังเสริม OIL"><div class="oil-head"><h3>กำลังเสริม OIL</h3><span>แสดงแยกจาก COCO</span></div><div class="oil-grid"><div class="oil-metric"><small>${b?"OIL สังกัดสาขานี้":"OIL ตาม Master"}</small><b data-metric="oil-master" data-value="${oilMaster}">${number(oilMaster)}<span>คน</span></b></div><div class="oil-metric"><small>ช่วยวิ่ง COCO ในรอบ</small><b data-metric="oil-actual" data-value="${oilActual}">${number(oilActual)}<span>คน</span></b></div></div><p>ช่วยวิ่งจริง: นับชื่อหลักและเสริมไม่ซ้ำจากรายการที่มีระยะทางมากกว่า 0 ตามสาขาและช่วงวันที่ที่เลือก</p><p>เทียบ Target ด้วยกำลังคน COCO ประจำเท่านั้น</p></section>`:""}
 function carTable(R,days,dim,b){const m=new Map();R.forEach(r=>{if(!r.car)return;const o=m.get(r.car)||{p:r.car,b:r.branch,g:r.group,km:0,n:0};o.km+=r.km;o.n++;m.set(r.car,o)});
 const L=[...m.values()].map(o=>{const t=o.g==="COCO"?tgt("KM","COCO",o.b):null;return{...o,avg:o.km/days,pr:o.km/days*dim,t}}).sort((a,b)=>b.pr-a.pr);
 const pc=o=>{if(!o.t)return'<span class="muted">-</span>';const p=o.pr/o.t*100,c=stc(p);return`<div class="pcell">${pbar(p,c)}<span class="${c}">${fmt(p,1)}%</span></div>`};
