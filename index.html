@@ -412,11 +412,11 @@ $("tCost").innerHTML='<thead><tr><th class="l">สาขา</th><th>เที่
 function driverTotals(R){const m=new Map(),name=v=>{const n=nm(v);return /^(?:[-–—]+|N\/?A|ไม่ระบุ|ไม่มี|งานบางปะอิน)$/i.test(n)?"":n};
 R.filter(r=>r.km>0).forEach(r=>{const names=[...new Set([name(r.driver),name(r.driver2)].filter(Boolean))];if(!names.length)return;const share=r.km/names.length;names.forEach(n=>{const o=m.get(n)||{n,km:0,t:0,branches:new Set()};o.km+=share;o.t++;o.branches.add(r.branch);m.set(n,o)})});
 return [...m.values()].sort((a,b)=>b.km-a.km||a.n.localeCompare(b.n,"th"))}
-function driverData(R){const L=driverTotals(R),master=new Map(),b=$("branch").value,from=$("from").value,to=$("to").value,today=dk(new Date());
+function driverData(R){const L=driverTotals(R),master=new Map(),from=$("from").value,to=$("to").value,today=dk(new Date());
 MD.forEach(d=>{const ds=master.get(d.name)||[];ds.push(d);master.set(d.name,ds)});
 return L.map(o=>{const ds=master.get(o.n)||[],positions=[...new Set(ds.map(d=>d.pos.replace(/\s/g,"").toUpperCase()).filter(Boolean))],homes=[...new Set(ds.map(d=>d.branch).filter(Boolean))],away=[...o.branches].filter(branch=>!homes.includes(branch));
-const labels=ds.length?positions.filter(p=>p!=="22W"&&p!=="22W(NEW)").map(p=>({text:p,type:p==="OIL"?"oil":"role",title:homes.length?`สังกัด ${homes.join(" / ")}`:""})):[{text:MD.length?"ไม่พบ Master":"ไม่มีข้อมูล Master",type:"unknown",title:""}];
-if(homes.length&&away.length)labels.push({text:b?`ช่วยจาก${homes.join(" / ")}`:"ช่วยต่างสาขา",type:"support",title:`สังกัด ${homes.join(" / ")} · ช่วยงาน ${away.join(" / ")}`});
+const labels=ds.length?positions.filter(p=>p!=="22W"&&p!=="22W(NEW)").map(p=>({text:p==="OIL"?"พขร. oil":p,type:p==="OIL"?"oil":"role",title:homes.length?`สังกัด ${homes.join(" / ")}`:""})):[{text:MD.length?"ไม่พบ Master":"ไม่มีข้อมูล Master",type:"unknown",title:""}];
+if(!positions.includes("OIL")&&homes.length&&away.length)labels.push({text:`พขร. ${homes.join(" / ")}`,type:"support",title:`สังกัด ${homes.join(" / ")} · ช่วยงาน ${away.join(" / ")}`});
 const leaveDates=[...new Set(ds.map(d=>dk(d.leave)).filter(date=>date&&(!from||date>=from)&&(!to||date<=to)))].sort(),resignation=leaveDates.map(date=>({text:`${date>today?"กำหนดลาออก":"ลาออก"} ${displayDate(date)}`,type:date>today?"leaving":"resigned",title:"วันลาออกอยู่ในรอบบิลที่เลือก"}));
 labels.push(...resignation);return{...o,positions,homes,labels,leaveDates,resignationText:resignation.map(d=>d.text).join(" / ")}})}
 const driverTags=o=>o.labels.map(d=>`<span class="driver-tag ${d.type}"${d.title?` title="${esc(d.title)}"`:""}>${esc(d.text)}</span>`).join(" ");
