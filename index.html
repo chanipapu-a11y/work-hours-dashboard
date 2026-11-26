@@ -259,7 +259,9 @@ function valueAxis(peak){const top=Math.max(1,peak)*1.05,p=Math.pow(10,Math.floo
 const scales=[.1,.15,.2,.25,.5,1,1.5,2,2.5,5,10].map(v=>{const step=v*p,count=Math.ceil(top/step-1e-10);return{step,count,max:Number((step*count).toPrecision(12))}}).filter(s=>s.count>=3&&s.count<=6);
 return scales.sort((a,b)=>a.max-b.max||Math.abs(a.count-4)-Math.abs(b.count-4))[0]}
 const missingDay=k=>k>dk(new Date())?"ยังไม่ถึงวันที่":"ไม่มีรายการในต้นทาง";
-const nm=v=>tx(v).replace(/^(นางสาว|น\.ส\.|นาย|นาง)\s*/,"").replace(/\s+/g," "),pl=v=>tx(v).replace(/\s+/g,"").toUpperCase();
+// ชื่อย่อที่ยืนยันแล้วว่าเป็น พขร.คนเดียวกัน
+const DRIVER_ALIASES=new Map([["ฤทธิไกร","ฤทธิไกร พรรณา"]]);
+const nm=v=>{const n=tx(v).replace(/^(นางสาว|น\.ส\.|นาย|นาง)\s*/,"").replace(/\s+/g," ");return DRIVER_ALIASES.get(n)||n},pl=v=>tx(v).replace(/\s+/g,"").toUpperCase();
 const cv=(r,ns,i)=>{for(const n of ns)if(r[n]!==undefined)return num(r[n]);return num(Object.values(r)[i])};
 function norm(r){const d=pdate(r["ว/ด/ป"]);const type=tx(r["ประเภทรถ"]);
 const o={date:d,k:dk(d),help:/ช่วย/.test(tx(r["สาขา"])),head:pl(r["ทะเบียนหัว"]),tail:pl(r["เบอร์หาง"]),plate:pl(r["ทะเบียนหัว"]),driver:nm(r["ชื่อพขร. (หลัก)"]),driver2:nm(r["ชื่อพขร. (เสริม)"]),
@@ -410,10 +412,10 @@ MD.forEach(d=>{const ds=master.get(d.name)||[];ds.push(d);master.set(d.name,ds)}
 const badge=(text,type,title="")=>`<span class="driver-tag ${type}"${title?` title="${esc(title)}"`:""}>${esc(text)}</span>`;
 const tags=o=>{const ds=master.get(o.n)||[];if(!ds.length)return badge(MD.length?"ไม่พบ Master":"ไม่มีข้อมูล Master","unknown");
 const positions=[...new Set(ds.map(d=>d.pos.replace(/\s/g,"").toUpperCase()).filter(Boolean))],homes=[...new Set(ds.map(d=>d.branch).filter(Boolean))],away=[...o.branches].filter(branch=>!homes.includes(branch));
-let h=positions.filter(p=>p!=="22W"&&p!=="22W(NEW)").map(p=>badge(p,p==="OIL"?"oil":"role",homes.length?`สังกัด ${homes.join(" / ")}`:"")).join("");
-if(homes.length&&away.length)h+=badge(b?`ช่วยจาก${homes.join(" / ")}`:"ช่วยต่างสาขา","support",`สังกัด ${homes.join(" / ")} · ช่วยงาน ${away.join(" / ")}`);return h};
+let h=positions.filter(p=>p!=="22W"&&p!=="22W(NEW)").map(p=>badge(p,p==="OIL"?"oil":"role",homes.length?`สังกัด ${homes.join(" / ")}`:"")).join(" ");
+if(homes.length&&away.length)h+=(h?" ":"")+badge(b?`ช่วยจาก${homes.join(" / ")}`:"ช่วยต่างสาขา","support",`สังกัด ${homes.join(" / ")} · ช่วยงาน ${away.join(" / ")}`);return h};
 $("tDrv").innerHTML='<thead><tr><th class="l">#</th><th class="l">พขร.</th><th>เที่ยว</th><th title="ระยะทางของรายการที่มีชื่อเป็น พขร.หลัก">กม.หลัก</th><th title="ระยะทางร่วมงานของรายการที่มีชื่อเป็น พขร.เสริม">กม.เสริม</th><th title="รวมระยะทางของรายการที่มีชื่อเป็นหลักหรือเสริม นับหนึ่งครั้งต่อรายการ ไม่ใช่ระยะทางแบ่งช่วงขับ">รวม (กม.)</th></tr></thead><tbody>'+
-(L.map((o,i)=>`<tr data-driver-name="${esc(o.n)}" data-main-km="${o.mainKm}" data-support-km="${o.supportKm}" data-total-km="${o.km}" data-trips="${o.t}"><td class="l"><span class="rk">${i+1}</span></td><td class="l"><div class="driver-name"><b>${esc(o.n)}</b>${tags(o)}</div></td><td>${fmt(o.t)}</td><td>${fmt(o.mainKm)}</td><td>${fmt(o.supportKm)}</td><td>${fmt(o.km)}</td></tr>`).join("")||'<tr><td class="l muted" colspan="6">ไม่มีรายการวิ่งที่ระบุชื่อ พขร.</td></tr>')+'</tbody>'}
+(L.map((o,i)=>`<tr data-driver-name="${esc(o.n)}" data-main-km="${o.mainKm}" data-support-km="${o.supportKm}" data-total-km="${o.km}" data-trips="${o.t}"><td class="l"><span class="rk">${i+1}</span></td><td class="l"><div class="driver-name"><b>${esc(o.n)}</b> ${tags(o)}</div></td><td>${fmt(o.t)}</td><td>${fmt(o.mainKm)}</td><td>${fmt(o.supportKm)}</td><td>${fmt(o.km)}</td></tr>`).join("")||'<tr><td class="l muted" colspan="6">ไม่มีรายการวิ่งที่ระบุชื่อ พขร.</td></tr>')+'</tbody>'}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function get(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return csv(await r.text())}
 const msg=t=>{const s=$("status");s.textContent=t||"";s.hidden=!t};
