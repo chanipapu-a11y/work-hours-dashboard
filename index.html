@@ -241,6 +241,8 @@ const MASTER_CAR_GID="1668913986", MASTER_DRIVER_GID="459940419";
 const SHEET_BASE=DATA_URL.split("gid=")[0];
 let rows=[],targets=[],bad=0,MC=[],MD=[],masterWarn="";
 const $=id=>document.getElementById(id),tx=v=>String(v??"").trim();
+// LINDE ใน Master คือสาขาระยอง
+const branchName=v=>/^LINDE$/i.test(tx(v))?"ระยอง":tx(v);
 const num=v=>{const n=Number(tx(v).replace(/[,฿\s]/g,""));return isFinite(n)?n:0};
 const fmt=(v,d=0)=>Number(v||0).toLocaleString("th-TH",{maximumFractionDigits:d});
 function csv(s){const out=[];let r=[],f="",q=false;for(let i=0;i<s.length;i++){const c=s[i];
@@ -269,8 +271,8 @@ const nm=v=>{const n=tx(v).replace(/^(นางสาว|น\.ส\.|นาย|�
 const cv=(r,ns,i)=>{for(const n of ns)if(r[n]!==undefined)return num(r[n]);return num(Object.values(r)[i])};
 function norm(r){const d=pdate(r["ว/ด/ป"]);const type=tx(r["ประเภทรถ"]);
 const o={date:d,k:dk(d),help:/ช่วย/.test(tx(r["สาขา"])),head:pl(r["ทะเบียนหัว"]),tail:pl(r["เบอร์หาง"]),plate:pl(r["ทะเบียนหัว"]),driver:nm(r["ชื่อพขร. (หลัก)"]),driver2:nm(r["ชื่อพขร. (เสริม)"]),
-branch:tx(r["สาขา"])||"ไม่ระบุ",group:type?"COCO":"LOCO",km:num(r["ระยะทางรวม"]),toll:cv(r,["ค่าทางด่วน (บาท)","ค่าทางด่วน"],9),hotel:cv(r,["ค่าห้องพัก (บาท)","ค่าห้องพัก","ค่าที่พัก (บาท)","ค่าที่พัก"],10),travel:cv(r,["ค่าเดินทาง (บาท)","ค่าเดินทาง"],11)};o.cost=o.toll+o.hotel+o.travel;o.car=o.group==="LOCO"?(/^ระยอง/.test(o.branch)?(o.head?"":o.tail):o.head):o.head;return o}
-function normT(r){return{type:tx(r["ประเภท"]),item:tx(r["รายการ"]),group:tx(r["กลุ่มงาน"]),branch:tx(r["สาขา"]),val:num(r["ค่า Target"]),start:pdate(r["เริ่มใช้วันที่"]),end:pdate(r["สิ้นสุดวันที่"])}}
+branch:branchName(r["สาขา"])||"ไม่ระบุ",group:type?"COCO":"LOCO",km:num(r["ระยะทางรวม"]),toll:cv(r,["ค่าทางด่วน (บาท)","ค่าทางด่วน"],9),hotel:cv(r,["ค่าห้องพัก (บาท)","ค่าห้องพัก","ค่าที่พัก (บาท)","ค่าที่พัก"],10),travel:cv(r,["ค่าเดินทาง (บาท)","ค่าเดินทาง"],11)};o.cost=o.toll+o.hotel+o.travel;o.car=o.group==="LOCO"?(/^ระยอง/.test(o.branch)?(o.head?"":o.tail):o.head):o.head;return o}
+function normT(r){return{type:tx(r["ประเภท"]),item:tx(r["รายการ"]),group:tx(r["กลุ่มงาน"]),branch:branchName(r["สาขา"]),val:num(r["ค่า Target"]),start:pdate(r["เริ่มใช้วันที่"]),end:pdate(r["สิ้นสุดวันที่"])}}
 // Target: CAR รวมสัญญาย่อยของสาขา (ระยองสัญญา 1, 2, 10W) / อื่นๆ ใช้ชื่อสาขาตรงตัว
 function tgt(type,group,branch){const L=targets.filter(t=>t.type===type&&t.group===group);
 if(branch){if(type==="CAR")return L.filter(t=>t.branch.startsWith(branch)).reduce((a,t)=>a+t.val,0)||null;
@@ -409,11 +411,11 @@ const stk=o=>{const c=o.t+o.h+o.v;if(!c)return'<span class="muted">-</span>';con
 const row=(k,o,tag)=>{const c=o.t+o.h+o.v;return`<tr><${tag} class="l">${k}</${tag}><${tag}>${fmt(o.n)}</${tag}><${tag}>${fmt(o.t)}</${tag}><${tag}>${fmt(o.h)}</${tag}><${tag}>${fmt(o.v)}</${tag}><${tag}><b>${fmt(c)}</b></${tag}><${tag} class="l">${stk(o)}</${tag}><${tag}>${fmt(o.n?c/o.n:0,1)}</${tag}></tr>`};
 $("tCost").innerHTML='<thead><tr><th class="l">สาขา</th><th>เที่ยว</th><th><i class="dot c1"></i>ค่าทางด่วน</th><th><i class="dot c2"></i>ค่าที่พัก</th><th><i class="dot c3"></i>ค่าเดินทาง</th><th>รวม</th><th class="l">สัดส่วน</th><th>เฉลี่ย/เที่ยว</th></tr></thead><tbody>'+L.map(([k,o])=>row(esc(k),o,"td")).join("")+'</tbody>'+(L.length>1?'<tfoot>'+row("รวม",T,"th")+'</tfoot>':"")}
 function driverTotals(R){const m=new Map(),name=v=>{const n=nm(v);return /^(?:[-–—]+|N\/?A|ไม่ระบุ|ไม่มี|งานบางปะอิน)$/i.test(n)?"":n};
-R.filter(r=>r.km>0).forEach(r=>{const names=[...new Set([name(r.driver),name(r.driver2)].filter(Boolean))];if(!names.length)return;const share=r.km/names.length;names.forEach(n=>{const o=m.get(n)||{n,km:0,t:0,branches:new Set()};o.km+=share;o.t++;o.branches.add(r.branch);m.set(n,o)})});
+R.filter(r=>r.km>0).forEach(r=>{const names=[...new Set([name(r.driver),name(r.driver2)].filter(Boolean))];if(!names.length)return;const share=r.km/names.length;names.forEach(n=>{const o=m.get(n)||{n,km:0,t:0,branches:new Set()};o.km+=share;o.t++;o.branches.add(branchName(r.branch));m.set(n,o)})});
 return [...m.values()].sort((a,b)=>b.km-a.km||a.n.localeCompare(b.n,"th"))}
 function driverData(R){const L=driverTotals(R),master=new Map(),from=$("from").value,to=$("to").value,today=dk(new Date());
 MD.forEach(d=>{const ds=master.get(d.name)||[];ds.push(d);master.set(d.name,ds)});
-return L.map(o=>{const ds=master.get(o.n)||[],positions=[...new Set(ds.map(d=>d.pos.replace(/\s/g,"").toUpperCase()).filter(Boolean))],homes=[...new Set(ds.map(d=>d.branch).filter(Boolean))],away=[...o.branches].filter(branch=>!homes.includes(branch));
+return L.map(o=>{const ds=master.get(o.n)||[],positions=[...new Set(ds.map(d=>d.pos.replace(/\s/g,"").toUpperCase()).filter(Boolean))],homes=[...new Set(ds.map(d=>branchName(d.branch)).filter(Boolean))],away=[...o.branches].filter(branch=>!homes.includes(branch));
 const labels=ds.length?positions.filter(p=>p!=="22W"&&p!=="22W(NEW)").map(p=>({text:p==="OIL"?"พขร. oil":p,type:p==="OIL"?"oil":"role",title:homes.length?`สังกัด ${homes.join(" / ")}`:""})):[{text:MD.length?"ไม่พบ Master":"ไม่มีข้อมูล Master",type:"unknown",title:""}];
 if(!positions.includes("OIL")&&homes.length&&away.length)labels.push({text:`พขร. ${homes.join(" / ")}`,type:"support",title:`สังกัด ${homes.join(" / ")} · ช่วยงาน ${away.join(" / ")}`});
 const leaveDates=[...new Set(ds.map(d=>dk(d.leave)).filter(date=>date&&(!from||date>=from)&&(!to||date<=to)))].sort(),resignation=leaveDates.map(date=>({text:`${date>today?"กำหนดลาออก":"ลาออก"} ${displayDate(date)}`,type:date>today?"leaving":"resigned",title:"วันลาออกอยู่ในรอบบิลที่เลือก"}));
@@ -437,8 +439,8 @@ async function load(){msg("กำลังโหลด...");
 try{const fail=[],sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const opt=(g,name)=>g?(async()=>{for(let i=0;i<3;i++){try{return await get(SHEET_BASE+"gid="+g+"&single=true&output=csv")}catch(e){if(i===2){fail.push(name+" ("+e.message+")");return[]}await sleep(800*(i+1))}}})():Promise.resolve([]);
 const [d,t,mc,md]=await Promise.all([get(DATA_URL),get(TARGET_URL),opt(MASTER_CAR_GID,"Master car"),opt(MASTER_DRIVER_GID,"Master driver")]);
-MC=mc.map(r=>({branch:tx(r["สาขา"]),plate:pl(r["ทะเบียน"])||pl(r["เบอร์รถ"]),type:tx(r["ประเภทรถ"])})).filter(x=>x.plate&&!/pick\s*up/i.test(x.branch+" "+x.type));
-MD=md.map(r=>({branch:tx(r["สาขา"]),name:nm(r["ชื่อ พขร."]),pos:tx(r["ตำแหน่ง"])||tx(Object.values(r)[3]),leave:leaveDate(tx(r["วันที่ลาออก"])||r["ลาออก"])})).filter(x=>x.name);
+MC=mc.map(r=>({branch:branchName(r["สาขา"]),plate:pl(r["ทะเบียน"])||pl(r["เบอร์รถ"]),type:tx(r["ประเภทรถ"])})).filter(x=>x.plate&&!/pick\s*up/i.test(x.branch+" "+x.type));
+MD=md.map(r=>({branch:branchName(r["สาขา"]),name:nm(r["ชื่อ พขร."]),pos:tx(r["ตำแหน่ง"])||tx(Object.values(r)[3]),leave:leaveDate(tx(r["วันที่ลาออก"])||r["ลาออก"])})).filter(x=>x.name);
 const w=[...fail];if(MASTER_DRIVER_GID&&!MD.length&&!w.some(x=>x.startsWith("Master driver")))w.push("Master driver ไม่มีข้อมูล");if(MASTER_CAR_GID&&!MC.length&&!w.some(x=>x.startsWith("Master car")))w.push("Master car ไม่มีข้อมูล");
 masterWarn=w.length?"⚠ โหลดไม่สำเร็จ: "+w.join(", "):"";
 const all=d.map(norm);bad=all.filter(r=>r.km<0||r.km>MAX_TRIP_KM).length;rows=all.filter(r=>r.km>=0&&r.km<=MAX_TRIP_KM);
