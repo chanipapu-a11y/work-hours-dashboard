@@ -265,8 +265,8 @@ function valueAxis(peak){const top=Math.max(1,peak)*1.05,p=Math.pow(10,Math.floo
 const scales=[.1,.15,.2,.25,.5,1,1.5,2,2.5,5,10].map(v=>{const step=v*p,count=Math.ceil(top/step-1e-10);return{step,count,max:Number((step*count).toPrecision(12))}}).filter(s=>s.count>=3&&s.count<=6);
 return scales.sort((a,b)=>a.max-b.max||Math.abs(a.count-4)-Math.abs(b.count-4))[0]}
 const missingDay=k=>k>dk(new Date())?"ยังไม่ถึงวันที่":"ไม่มีรายการในต้นทาง";
-// ชื่อย่อที่ยืนยันแล้วว่าเป็น พขร.คนเดียวกัน
-const DRIVER_ALIASES=new Map([["ฤทธิไกร","ฤทธิไกร พรรณา"]]);
+// ชื่อย่อและชื่อสะกดคลาดเคลื่อนที่ยืนยันแล้วว่าเป็น พขร.คนเดียวกัน
+const DRIVER_ALIASES=new Map([["ฤทธิไกร","ฤทธิไกร พรรณา"],["กิตติภพ ทองคอนเหมือน","กิตติภพ ทองดอนเหมือน"]]);
 const nm=v=>{const n=tx(v).replace(/^(นางสาว|น\.ส\.|นาย|นาง)\s*/,"").replace(/\s+/g," ");return DRIVER_ALIASES.get(n)||n},pl=v=>tx(v).replace(/\s+/g,"").toUpperCase();
 const cv=(r,ns,i)=>{for(const n of ns)if(r[n]!==undefined)return num(r[n]);return num(Object.values(r)[i])};
 function norm(r){const d=pdate(r["ว/ด/ป"]);const type=tx(r["ประเภทรถ"]);
